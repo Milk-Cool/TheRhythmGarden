@@ -1,0 +1,33 @@
+{
+  "name": "therhythmgarden",
+  "version": "0.1.0",
+  "description": "A rhythm game with vines!",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Milk-Cool/TheRhythmGarden.git"
+  },
+  "keywords": [
+    "rhythm",
+    "game",
+    "vines"
+  ],
+  "author": "Milk_Cool",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Milk-Cool/TheRhythmGarden/issues"
+  },
+  "homepage": "https://github.com/Milk-Cool/TheRhythmGarden#readme",
+  "dependencies": {
+    "vite": "^6.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10"
+  }
+}
