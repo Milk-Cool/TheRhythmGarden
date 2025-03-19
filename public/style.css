@@ -1,9 +1,20 @@
+:root {
+    --width: min(100vw, calc(100vh * 320 / 180));
+    --height: auto;
+}
+
+body {
+    margin: 0;
+    background: black;
+}
+
 canvas {
     position: fixed;
+    left: 50vw;
     top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    margin-left: calc(var(--width) / -2);
+    width: var(--width);
+    height: var(--height);
     z-index: -1;
     image-rendering: pixelated;
 }
