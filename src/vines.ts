@@ -110,6 +110,11 @@ export class Vines {
                 this.ctx.beginPath();
                 this.ctx.arc(point.x, point.y, lineWidth, 0, Math.PI * 2);
                 this.ctx.stroke();
+
+                this.ctx.beginPath();
+                this.ctx.moveTo(point.x, point.y);
+                this.ctx.lineTo(point.x + Math.cos(point.a) * lineWidth, point.y + Math.sin(point.a) * lineWidth);
+                this.ctx.stroke();
             }
     }
 }
