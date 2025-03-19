@@ -1,7 +1,14 @@
 import { pointsOnBezierCurves, Point } from "points-on-curve";
 import filter from "./antifilter";
 
-export type VinePointButton = "left" | "middle" | "right" | "none";
+export type VinePointInputButton = "left" | "middle" | "right";
+export type VinePointButton = VinePointInputButton | "none";
+
+const indicators: Record<VinePointInputButton, string> = {
+    "left": "L",
+    "middle": "M",
+    "right": "R"
+}
 
 export type VinePoint = {
     t: number,
@@ -23,21 +30,50 @@ const lineWidth = 12;
 const colors = {
     background: "#40593d",
     vineBack: "#76ad6f",
-    vineFront: "#82c27a"
+    vineFront: "#82c27a",
+    keyBack: "#7f7f7f",
+    keyBackHit: "#467d55",
+    keyFront: "#ffffff"
 };
+
+const timings = {
+    "waow": 50,
+    "good": 100,
+    "ok": 150,
+    "bad": 300
+};
+export type Timing = keyof typeof timings;
+
+type Hit = {
+    timing: Timing,
+    t: number
+};
+
+const btnIndicatorBefore = 1500;
+const btnIndicatorAfter = 300;
+const btnIndicatorFade = 300;
 
 export class Vines {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     segs: VinePoint[][];
-    preloaded: PreloadedSegment[] = [];
+    private preloaded: PreloadedSegment[] = [];
+    private hit: Hit[][] = [];
+    private debug: boolean;
 
-    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, segs: VinePoint[][] = []) {
+    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, segs: VinePoint[][] = [], debug: boolean = false) {
         this.canvas = canvas;
         this.ctx = ctx;
         this.segs = segs;
 
         this.ctx.filter = filter;
+        this.debug = debug;
+    }
+
+    private iterPoints(cb: (point: VinePoint, segI: number, pointI: number) => void) {
+        this.segs.forEach((seg, segI) => {
+            seg.forEach((point, pointI) => cb(point, segI, pointI));
+        });
     }
 
     preload(tolerance = 0.15) {
@@ -101,10 +137,10 @@ export class Vines {
         this.ctx.fillStyle = colors.vineFront;
         this.renderPreloaded(t);
 
-        this.ctx.strokeStyle = "red";
-        this.ctx.lineWidth = 2;
-        for(const seg of this.segs)
-            for(const point of seg) {
+        if(this.debug) {
+            this.ctx.strokeStyle = "red";
+            this.ctx.lineWidth = 2;
+            this.iterPoints(point => {
                 this.ctx.beginPath();
                 this.ctx.arc(point.x, point.y, lineWidth, 0, Math.PI * 2);
                 this.ctx.stroke();
@@ -113,6 +149,64 @@ export class Vines {
                 this.ctx.moveTo(point.x, point.y);
                 this.ctx.lineTo(point.x + Math.cos(point.a) * lineWidth, point.y + Math.sin(point.a) * lineWidth);
                 this.ctx.stroke();
-            }
+            });
+        }
+
+        this.ctx.font = "bold 12pt monospace";
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+        this.iterPoints((point, segI, pointI) => {
+            if(point.button === "none")
+                return;
+            const hit = segI in this.hit && pointI in this.hit[segI];
+            if((!hit && (point.t - t > btnIndicatorBefore || t - point.t > btnIndicatorAfter))
+                || (hit && t - this.hit[segI][pointI].t > btnIndicatorFade))
+                return;
+            this.ctx.globalAlpha = hit ? Math.max(0, 1 - (t - this.hit[segI][pointI].t) / btnIndicatorFade) : 1;
+            this.ctx.fillStyle = hit ? colors.keyBackHit : colors.keyBack;
+
+            this.ctx.beginPath();
+            this.ctx.moveTo(point.x - 10, point.y - 30);
+            this.ctx.lineTo(point.x + 10, point.y - 30);
+            this.ctx.lineTo(point.x + 10, point.y - 10);
+            this.ctx.lineTo(point.x + 5, point.y - 10);
+            this.ctx.lineTo(point.x, point.y - 5);
+            this.ctx.lineTo(point.x - 5, point.y - 10);
+            this.ctx.lineTo(point.x - 10, point.y - 10);
+            this.ctx.fill();
+
+            this.ctx.fillStyle = colors.keyFront;
+
+            this.ctx.beginPath();
+            this.ctx.fillText(indicators[point.button], point.x, point.y - 20);
+        });
+        this.ctx.globalAlpha = 1;
+    }
+
+    private hitPoint(segI: number, pointI: number, timing: Timing, t: number) {
+        if(!(segI in this.hit))
+            this.hit[segI] = [];
+        if(!(pointI in this.hit[segI]))
+            this.hit[segI][pointI] = { timing, t };
+
+        if(this.debug)
+            console.log("hit!", segI, pointI, timing);
+    }
+
+    input(button: VinePointInputButton, t: number) {
+        this.iterPoints((point, segI, pointI) => {
+            const diff = Math.abs(point.t - t);
+            if(point.button !== button || diff > timings.bad)
+                return;
+
+            if(diff <= timings.waow)
+                this.hitPoint(segI, pointI, "waow", t);
+            else if(diff <= timings.good)
+                this.hitPoint(segI, pointI, "good", t);
+            else if(diff <= timings.ok)
+                this.hitPoint(segI, pointI, "ok", t);
+            else if(diff <= timings.bad)
+                this.hitPoint(segI, pointI, "bad", t);
+        });
     }
 }
