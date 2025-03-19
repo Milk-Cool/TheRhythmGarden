@@ -1,5 +1,6 @@
 import { pointsOnBezierCurves, Point } from "points-on-curve";
 import filter from "./antifilter";
+import { easeInOutSine } from "./easings";
 
 export type VinePointInputButton = "left" | "middle" | "right";
 export type VinePointButton = VinePointInputButton | "none";
@@ -17,6 +18,12 @@ export type VinePoint = {
     y: number,
     a: number
 };
+
+export type CameraPoint = {
+    t: number,
+    x: number,
+    y: number
+}
 
 type PreloadedSegment = {
     x1: number,
@@ -57,14 +64,19 @@ export class Vines {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     segs: VinePoint[][];
+    camera: CameraPoint[];
     private preloaded: PreloadedSegment[] = [];
     private hit: Hit[][] = [];
     private debug: boolean;
 
-    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, segs: VinePoint[][] = [], debug: boolean = false) {
+    private ox = 0;
+    private oy = 0;
+
+    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, segs: VinePoint[][] = [], camera: CameraPoint[] = [], debug: boolean = false) {
         this.canvas = canvas;
         this.ctx = ctx;
         this.segs = segs;
+        this.camera = camera;
 
         this.ctx.filter = filter;
         this.debug = debug;
@@ -106,12 +118,12 @@ export class Vines {
 
     renderSegment(segment: PreloadedSegment, xo = 0, yo = 0) {
         this.ctx.beginPath();
-        this.ctx.moveTo(segment.x1 + xo, segment.y1 + yo);
-        this.ctx.lineTo(segment.x2 + xo, segment.y2 + yo);
+        this.ctx.moveTo(this.ox + segment.x1 + xo, this.oy + segment.y1 + yo);
+        this.ctx.lineTo(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo);
         this.ctx.stroke();
 
         this.ctx.beginPath();
-        this.ctx.arc(segment.x2 + xo, segment.y2 + yo, lineWidth / 2, 0, Math.PI * 2);
+        this.ctx.arc(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo, lineWidth / 2, 0, Math.PI * 2);
         this.ctx.fill();
     }
 
@@ -124,6 +136,22 @@ export class Vines {
     }
 
     render(t: number) {
+        let camPointBefore: CameraPoint | null = null, camPointAfter: CameraPoint | null = null;
+        for(const cameraPoint of this.camera) {
+            if(cameraPoint.t <= t && (camPointBefore === null || cameraPoint.t > camPointBefore.t))
+                camPointBefore = cameraPoint;
+            else if(cameraPoint.t > t && (camPointAfter === null || cameraPoint.t < camPointAfter.t))
+                camPointAfter = cameraPoint;
+        }
+        console.log(t, camPointBefore, camPointAfter);
+        if(camPointBefore !== null && camPointAfter !== null && camPointAfter.t !== camPointBefore.t) {
+            const progress = (t - camPointBefore.t) / (camPointAfter.t - camPointBefore.t);
+            const easeProgress = easeInOutSine(progress);
+            this.ox = camPointAfter.x * easeProgress + camPointBefore.x * (1 - easeProgress);
+            this.oy = camPointAfter.y * easeProgress + camPointBefore.y * (1 - easeProgress);
+            console.log(this.ox, this.oy);
+        }
+
         this.ctx.fillStyle = colors.background;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         // TODO: separate variables
@@ -142,12 +170,12 @@ export class Vines {
             this.ctx.lineWidth = 2;
             this.iterPoints(point => {
                 this.ctx.beginPath();
-                this.ctx.arc(point.x, point.y, lineWidth, 0, Math.PI * 2);
+                this.ctx.arc(this.ox + point.x, this.oy + point.y, lineWidth, 0, Math.PI * 2);
                 this.ctx.stroke();
 
                 this.ctx.beginPath();
-                this.ctx.moveTo(point.x, point.y);
-                this.ctx.lineTo(point.x + Math.cos(point.a) * lineWidth, point.y + Math.sin(point.a) * lineWidth);
+                this.ctx.moveTo(this.ox + point.x, this.oy + point.y);
+                this.ctx.lineTo(this.ox + point.x + Math.cos(point.a) * lineWidth, this.oy + point.y + Math.sin(point.a) * lineWidth);
                 this.ctx.stroke();
             });
         }
@@ -166,19 +194,19 @@ export class Vines {
             this.ctx.fillStyle = hit ? colors.keyBackHit : colors.keyBack;
 
             this.ctx.beginPath();
-            this.ctx.moveTo(point.x - 10, point.y - 30);
-            this.ctx.lineTo(point.x + 10, point.y - 30);
-            this.ctx.lineTo(point.x + 10, point.y - 10);
-            this.ctx.lineTo(point.x + 5, point.y - 10);
-            this.ctx.lineTo(point.x, point.y - 5);
-            this.ctx.lineTo(point.x - 5, point.y - 10);
-            this.ctx.lineTo(point.x - 10, point.y - 10);
+            this.ctx.moveTo(this.ox + point.x - 10, this.oy + point.y - 30);
+            this.ctx.lineTo(this.ox + point.x + 10, this.oy + point.y - 30);
+            this.ctx.lineTo(this.ox + point.x + 10, this.oy + point.y - 10);
+            this.ctx.lineTo(this.ox + point.x + 5, this.oy + point.y - 10);
+            this.ctx.lineTo(this.ox + point.x, this.oy + point.y - 5);
+            this.ctx.lineTo(this.ox + point.x - 5, this.oy + point.y - 10);
+            this.ctx.lineTo(this.ox + point.x - 10, this.oy + point.y - 10);
             this.ctx.fill();
 
             this.ctx.fillStyle = colors.keyFront;
 
             this.ctx.beginPath();
-            this.ctx.fillText(indicators[point.button], point.x, point.y - 20);
+            this.ctx.fillText(indicators[point.button], this.ox + point.x, this.oy + point.y - 20);
         });
         this.ctx.globalAlpha = 1;
     }

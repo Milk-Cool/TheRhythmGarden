@@ -1,4 +1,4 @@
-import { VinePoint, VinePointInputButton, Vines } from "./vines";
+import { CameraPoint, VinePoint, VinePointInputButton, Vines } from "./vines";
 
 const segs: VinePoint[][] = [
     [
@@ -11,12 +11,21 @@ const segs: VinePoint[][] = [
     ]
 ];
 
+const camera: CameraPoint[] = [
+    { t: 0, x: 20, y: 40 },
+    { t: 1000, x: -30, y: 20 },
+    { t: 2000, x: -50, y: -30 },
+    { t: 3000, x: -130, y: -50 },
+    { t: 4000, x: 10, y: 70 },
+    { t: 5000, x: 20, y: 40 },
+];
+
 const canvas = document.querySelector("canvas");
 if(!canvas) throw new Error("canvas not found!!");
 const ctx = canvas?.getContext("2d");
 if(!ctx) throw new Error("context not found!!");
 
-const vines = new Vines(canvas, ctx, segs, true);
+const vines = new Vines(canvas, ctx, segs, camera, true);
 vines.preload();
 let t = 0;
 setInterval(() => vines.render(t += 10), 10);
