@@ -11,7 +11,8 @@ body {
 canvas {
     position: fixed;
     left: 50vw;
-    top: 0;
+    top: 50vh;
+    transform: translateY(-50%);
     margin-left: calc(var(--width) / -2);
     width: var(--width);
     height: var(--height);
