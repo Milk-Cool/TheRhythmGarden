@@ -1,3 +1,4 @@
+import { setFrameHandler } from "./frames";
 import { CameraPoint, VinePoint, VinePointInputButton, Vines } from "./vines";
 
 const segs: VinePoint[][] = [
@@ -28,7 +29,7 @@ if(!ctx) throw new Error("context not found!!");
 const vines = new Vines(canvas, ctx, segs, camera, true);
 vines.preload();
 let t = 0;
-setInterval(() => vines.render(t += 10), 10);
+setFrameHandler(deltaMs => vines.render(t += deltaMs));
 
 document.addEventListener("keydown", e => {
     const btn: VinePointInputButton =
