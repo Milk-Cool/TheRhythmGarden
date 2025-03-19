@@ -2,12 +2,10 @@ import { pointsOnBezierCurves, Point } from "points-on-curve";
 import filter from "./antifilter";
 
 export type VinePointButton = "left" | "middle" | "right" | "none";
-export type VinePointType = "normal" | "split" | "merge";
 
 export type VinePoint = {
     t: number,
     button: VinePointButton,
-    type: VinePointType,
     x: number,
     y: number,
     a: number
