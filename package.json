@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/Milk-Cool/TheRhythmGarden#readme",
   "dependencies": {
+    "points-on-curve": "^1.0.1",
     "vite": "^6.2.2"
   },
   "devDependencies": {
