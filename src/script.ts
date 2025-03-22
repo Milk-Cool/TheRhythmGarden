@@ -33,13 +33,13 @@ setFrameHandler(deltaMs => vines.render(t += deltaMs));
 
 document.addEventListener("keydown", e => {
     const btn: VinePointInputButton =
-        e.key === "f" || e.key === "j"
+        e.key === "x"
         ? "middle"
-        : e.key === "d"
+        : e.key === "z"
         ? "left"
         : "right";
     // Maybe there's a better way to do this? idk too lazy to think about it
-    if(btn === "right" && e.key !== "k")
+    if(btn === "right" && e.key !== "c")
         return;
     console.log(btn);
     vines.input(btn, t);
