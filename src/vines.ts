@@ -237,4 +237,17 @@ export class Vines {
                 this.hitPoint(segI, pointI, "bad", t);
         });
     }
+
+    accuracy(t: number) {
+        let n = 0, score = 0;
+        this.iterPoints((point, segI, pointI) => {
+            const wasHit = segI in this.hit && pointI in this.hit[segI];
+            if(wasHit) {
+                n++;
+                score += timings.waow / timings[this.hit[segI][pointI].timing];
+            } else if(t > point.t + timings.bad)
+                n++;
+        });
+        return (score / n) * 100;
+    }
 }
