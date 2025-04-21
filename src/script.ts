@@ -54,11 +54,12 @@ document.addEventListener("keydown", e => {
     vines.input(btn, t);
 });
 const play = document.querySelector("#play") as HTMLButtonElement;
-play.addEventListener("click", () => {
+play.addEventListener("click", async () => {
     t = 0;
     // vines = new Vines(canvas, ctx, segs, camera, true);
     vines.reset();
-    vines.preload();
+    await vines.preload();
+    vines.audioPlay(0);
 
     setFrameHandler(deltaMs => {
         const done = vines.render(t += deltaMs);
@@ -74,6 +75,8 @@ play.addEventListener("click", () => {
 const indexEl = document.querySelector("#index") as HTMLDivElement;
 fetchLevelIndex().then(index => {
     for(const level of index) {
+        indexEl.appendChild(document.createElement("br"));
+
         const levelButton = document.createElement("button");
         levelButton.innerText = level.songName;
         levelButton.addEventListener("click", async () => {

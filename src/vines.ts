@@ -1,6 +1,7 @@
 import { pointsOnBezierCurves, Point } from "points-on-curve";
 import filter from "./antifilter";
 import * as easingFunctions from "./easings";
+import { until } from "./until";
 
 export type VinePointInputButton = "left" | "middle" | "right";
 export type VinePointButton = VinePointInputButton | "none";
@@ -75,6 +76,8 @@ export class Vines {
     ctx: CanvasRenderingContext2D;
     segs: VinePoint[][];
     camera: CameraPoint[];
+    audio: HTMLAudioElement | null = null;
+    audioURI: string;
     private preloaded: PreloadedSegment[] = [];
     private hit: Hit[][] = [];
     private debug: boolean;
@@ -84,11 +87,12 @@ export class Vines {
 
     private maxTime: number = -1;
 
-    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, segs: VinePoint[][] = [], camera: CameraPoint[] = [], debug: boolean = false) {
+    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, segs: VinePoint[][] = [], camera: CameraPoint[] = [], audioURI: string, debug: boolean = false) {
         this.canvas = canvas;
         this.ctx = ctx;
         this.segs = segs;
         this.camera = camera;
+        this.audioURI = audioURI;
 
         this.ctx.filter = filter;
         this.debug = debug;
@@ -100,8 +104,14 @@ export class Vines {
         });
     }
 
-    preload(tolerance = 0.4) {
+    async preload(tolerance = 0.4) {
         if(this.segs.length < 1) return;
+
+        this.audio = new Audio();
+        let loaded = false;
+        this.audio.oncanplaythrough = () => loaded = true;
+        this.audio.src = this.audioURI;
+
         for(const seg of this.segs) {
             if(seg.length < 2) continue;
             for(let i = 1; i < seg.length; i++) {
@@ -127,6 +137,9 @@ export class Vines {
                 }
             }
         }
+
+        if(this.audioURI) await until(() => loaded);
+        else this.audio = null;
     }
 
     renderSegment(segment: PreloadedSegment, xo = 0, yo = 0) {
@@ -146,6 +159,17 @@ export class Vines {
             
             this.renderSegment(segment, xo, yo);
         }
+    }
+
+    audioPlay(t: number) {
+        if(this.audio === null) return;
+        this.audio.currentTime = t / 1000;
+        this.audio.play();
+    }
+
+    audioPause() {
+        if(this.audio === null) return;
+        this.audio.pause();
     }
 
     render(t: number): boolean {
@@ -279,5 +303,10 @@ export class Vines {
     reset() {
         this.preloaded = [];
         this.hit = [];
+        if(this.audio instanceof HTMLAudioElement) {
+            this.audio.pause();
+            this.audio.remove();
+            this.audio = null;
+        }
     }
 }
