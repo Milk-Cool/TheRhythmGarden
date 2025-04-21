@@ -29,7 +29,10 @@ if(!ctx) throw new Error("context not found!!");
 const vines = new Vines(canvas, ctx, segs, camera, true);
 vines.preload();
 let t = 0;
-setFrameHandler(deltaMs => vines.render(t += deltaMs));
+setFrameHandler(deltaMs => {
+    const done = vines.render(t += deltaMs);
+    if(done) location.reload();
+});
 
 document.addEventListener("keydown", e => {
     const btn: VinePointInputButton =

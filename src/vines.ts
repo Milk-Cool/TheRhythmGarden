@@ -73,6 +73,8 @@ export class Vines {
     private ox = 0;
     private oy = 0;
 
+    private maxTime: number = -1;
+
     constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, segs: VinePoint[][] = [], camera: CameraPoint[] = [], debug: boolean = false) {
         this.canvas = canvas;
         this.ctx = ctx;
@@ -95,6 +97,7 @@ export class Vines {
             if(seg.length < 2) continue;
             for(let i = 1; i < seg.length; i++) {
                 const cur = seg[i], last = seg[i - 1];
+                this.maxTime = Math.max(this.maxTime, cur.t, last.t);
                 const pointDist = Math.hypot(cur.x - last.x, cur.y - last.y) / 2;
                 const pcur = { x: cur.x + Math.cos(cur.a + Math.PI) * pointDist, y: cur.y + Math.sin(cur.a + Math.PI) * pointDist },
                     plast = { x: last.x + Math.cos(last.a) * pointDist, y: last.y + Math.sin(last.a) * pointDist };
@@ -136,7 +139,9 @@ export class Vines {
         }
     }
 
-    render(t: number) {
+    render(t: number): boolean {
+        if(t > this.maxTime + 1000) return true;
+
         let camPointBefore: CameraPoint | null = null, camPointAfter: CameraPoint | null = null;
         for(const cameraPoint of this.camera) {
             if(cameraPoint.t <= t && (camPointBefore === null || cameraPoint.t > camPointBefore.t))
@@ -216,6 +221,8 @@ export class Vines {
         this.ctx.fillStyle = colors.hud;
         this.ctx.beginPath();
         this.ctx.fillText(`accuracy: ${this.accuracy(t).toFixed(2)}%`, this.canvas.width / 2, 5);
+
+        return false;
     }
 
     private hitPoint(segI: number, pointI: number, timing: Timing, t: number) {
