@@ -40,7 +40,8 @@ const colors = {
     vineFront: "#82c27a",
     keyBack: "#7f7f7f",
     keyBackHit: "#467d55",
-    keyFront: "#ffffff"
+    keyFront: "#ffffff",
+    hud: "#ffffff"
 };
 
 const timings = {
@@ -209,6 +210,12 @@ export class Vines {
             this.ctx.fillText(indicators[point.button], this.ox + point.x, this.oy + point.y - 20);
         });
         this.ctx.globalAlpha = 1;
+
+        this.ctx.font = "bold 9pt monospace";
+        this.ctx.textBaseline = "top";
+        this.ctx.fillStyle = colors.hud;
+        this.ctx.beginPath();
+        this.ctx.fillText(`accuracy: ${this.accuracy(t).toFixed(2)}%`, this.canvas.width / 2, 5);
     }
 
     private hitPoint(segI: number, pointI: number, timing: Timing, t: number) {
@@ -241,6 +248,7 @@ export class Vines {
     accuracy(t: number) {
         let n = 0, score = 0;
         this.iterPoints((point, segI, pointI) => {
+            if(point.button === "none") return;
             const wasHit = segI in this.hit && pointI in this.hit[segI];
             if(wasHit) {
                 n++;
@@ -248,6 +256,7 @@ export class Vines {
             } else if(t > point.t + timings.bad)
                 n++;
         });
-        return (score / n) * 100;
+        const accuracy = (score / n) * 100;
+        return Number.isNaN(accuracy) ? 0 : accuracy;
     }
 }
