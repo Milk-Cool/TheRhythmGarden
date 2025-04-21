@@ -24,7 +24,6 @@ canvas {
     position: fixed;
     bottom: 1em;
     right: 1em;
-    cursor: pointer;
 }
 
 #index {
@@ -33,7 +32,7 @@ canvas {
     left: 1em;
 }
 
-#index > button {
+#index > button, .play > button {
     cursor: pointer;
 }
 
