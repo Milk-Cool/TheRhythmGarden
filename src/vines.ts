@@ -275,4 +275,9 @@ export class Vines {
         const accuracy = (score / n) * 100;
         return Number.isNaN(accuracy) ? 0 : accuracy;
     }
+
+    reset() {
+        this.preloaded = [];
+        this.hit = [];
+    }
 }

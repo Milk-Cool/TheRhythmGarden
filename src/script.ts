@@ -56,6 +56,7 @@ const play = document.querySelector("#play") as HTMLButtonElement;
 play.addEventListener("click", () => {
     t = 0;
     // vines = new Vines(canvas, ctx, segs, camera, true);
+    vines.reset();
     vines.preload();
 
     setFrameHandler(deltaMs => {
