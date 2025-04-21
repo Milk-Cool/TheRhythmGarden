@@ -100,7 +100,7 @@ export class Vines {
         });
     }
 
-    preload(tolerance = 0.15) {
+    preload(tolerance = 0.4) {
         if(this.segs.length < 1) return;
         for(const seg of this.segs) {
             if(seg.length < 2) continue;
