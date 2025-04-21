@@ -1,6 +1,6 @@
 import { pointsOnBezierCurves, Point } from "points-on-curve";
 import filter from "./antifilter";
-import { easeInOutSine } from "./easings";
+import * as easingFunctions from "./easings";
 
 export type VinePointInputButton = "left" | "middle" | "right";
 export type VinePointButton = VinePointInputButton | "none";
@@ -19,10 +19,19 @@ export type VinePoint = {
     a: number
 };
 
+export type CameraEasing = "sine-in-out" | "sine-in" | "sine-out" | "linear";
+export const easings: Record<CameraEasing, (x: number) => number> = {
+    "linear": easingFunctions.linear,
+    "sine-in": easingFunctions.easeInSine,
+    "sine-out": easingFunctions.easeOutSine,
+    "sine-in-out": easingFunctions.easeInOutSine
+};
+
 export type CameraPoint = {
     t: number,
     x: number,
-    y: number
+    y: number,
+    easing?: CameraEasing
 }
 
 type PreloadedSegment = {
@@ -152,7 +161,7 @@ export class Vines {
         console.log(t, camPointBefore, camPointAfter);
         if(camPointBefore !== null && camPointAfter !== null && camPointAfter.t !== camPointBefore.t) {
             const progress = (t - camPointBefore.t) / (camPointAfter.t - camPointBefore.t);
-            const easeProgress = easeInOutSine(progress);
+            const easeProgress = easings[camPointAfter.easing ?? "linear"](progress);
             this.ox = camPointAfter.x * easeProgress + camPointBefore.x * (1 - easeProgress);
             this.oy = camPointAfter.y * easeProgress + camPointBefore.y * (1 - easeProgress);
             console.log(this.ox, this.oy);

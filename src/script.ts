@@ -14,9 +14,9 @@ const segs: VinePoint[][] = [
 
 const camera: CameraPoint[] = [
     { t: 0, x: 20, y: 40 },
-    { t: 1000, x: -30, y: 20 },
-    { t: 2000, x: -50, y: -30 },
-    { t: 3000, x: -130, y: -50 },
+    { t: 1000, x: -30, y: 20, easing: "sine-in" },
+    { t: 2000, x: -50, y: -30, easing: "sine-out" },
+    { t: 3000, x: -130, y: -50, easing: "sine-in-out" },
     { t: 4000, x: 10, y: 70 },
     { t: 5000, x: 20, y: 40 },
 ];
@@ -48,7 +48,7 @@ play.addEventListener("click", () => {
     t = 0;
     vines = new Vines(canvas, ctx, segs, camera, true);
     vines.preload();
-    
+
     setFrameHandler(deltaMs => {
         const done = vines.render(t += deltaMs);
         if(done) {
