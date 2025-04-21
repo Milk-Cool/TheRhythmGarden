@@ -20,9 +20,13 @@ canvas {
     image-rendering: pixelated;
 }
 
-#play {
+.play {
     position: fixed;
     bottom: 1em;
     right: 1em;
     cursor: pointer;
+}
+
+#file {
+    color: white;
 }

@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/Milk-Cool/TheRhythmGarden#readme",
   "dependencies": {
+    "@zip.js/zip.js": "^2.7.60",
     "points-on-curve": "^1.0.1",
     "vite": "^6.2.2",
     "vite-plugin-minify": "^2.1.0"
