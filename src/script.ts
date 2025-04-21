@@ -26,15 +26,11 @@ if(!canvas) throw new Error("canvas not found!!");
 const ctx = canvas?.getContext("2d");
 if(!ctx) throw new Error("context not found!!");
 
-const vines = new Vines(canvas, ctx, segs, camera, true);
-vines.preload();
-let t = 0;
-setFrameHandler(deltaMs => {
-    const done = vines.render(t += deltaMs);
-    if(done) location.reload();
-});
+let vines: Vines;
+let t = -1;
 
 document.addEventListener("keydown", e => {
+    if(t === -1) return;
     const btn: VinePointInputButton =
         e.key === "x"
         ? "middle"
@@ -46,4 +42,20 @@ document.addEventListener("keydown", e => {
         return;
     console.log(btn);
     vines.input(btn, t);
+});
+const play = document.querySelector("#play") as HTMLButtonElement;
+play.addEventListener("click", () => {
+    t = 0;
+    vines = new Vines(canvas, ctx, segs, camera, true);
+    vines.preload();
+    
+    setFrameHandler(deltaMs => {
+        const done = vines.render(t += deltaMs);
+        if(done) {
+            play.disabled = false;
+            return false;
+        }
+        return true;
+    });
+    play.disabled = true;
 });

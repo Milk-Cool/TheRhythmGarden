@@ -19,3 +19,10 @@ canvas {
     z-index: -1;
     image-rendering: pixelated;
 }
+
+#play {
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+    cursor: pointer;
+}
