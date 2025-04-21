@@ -27,6 +27,16 @@ canvas {
     cursor: pointer;
 }
 
+#index {
+    position: fixed;
+    bottom: 1em;
+    left: 1em;
+}
+
+#index > button {
+    cursor: pointer;
+}
+
 #file {
     color: white;
 }

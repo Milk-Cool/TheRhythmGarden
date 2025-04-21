@@ -1,6 +1,7 @@
 import { setFrameHandler } from "./frames";
 import { loadLevel } from "./level";
 import { CameraPoint, VinePoint, VinePointInputButton, Vines } from "./vines";
+import { fetchLevelIndex } from "./levelindex";
 
 // const segs: VinePoint[][] = [
 //     [
@@ -68,4 +69,18 @@ play.addEventListener("click", () => {
         return true;
     });
     play.disabled = true;
+});
+
+const indexEl = document.querySelector("#index") as HTMLDivElement;
+fetchLevelIndex().then(index => {
+    for(const level of index) {
+        const levelButton = document.createElement("button");
+        levelButton.innerText = level.songName;
+        levelButton.addEventListener("click", async () => {
+            const f = await fetch(level.url);
+            const blob = await f.blob();
+            vines = await loadLevel(blob, canvas, ctx, true);
+        });
+        indexEl.appendChild(levelButton);
+    }
 });
