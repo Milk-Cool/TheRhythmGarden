@@ -142,7 +142,7 @@ export class Vines {
         else this.audio = null;
     }
 
-    renderSegment(segment: PreloadedSegment, xo = 0, yo = 0) {
+    private renderSegment(segment: PreloadedSegment, xo = 0, yo = 0) {
         this.ctx.beginPath();
         this.ctx.moveTo(this.ox + segment.x1 + xo, this.oy + segment.y1 + yo);
         this.ctx.lineTo(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo);
@@ -153,7 +153,7 @@ export class Vines {
         this.ctx.fill();
     }
 
-    renderPreloaded(t: number, xo = 0, yo = 0) {
+    private renderPreloaded(t: number, xo = 0, yo = 0) {
         for(const segment of this.preloaded) {
             if(segment.t > t) continue;
             
