@@ -1,7 +1,4 @@
-import { setFrameHandler } from "./frames";
-import { loadLevel } from "./level";
-import { CameraPoint, VinePoint, VinePointInputButton, Vines } from "./vines";
-import { fetchLevelIndex } from "./levelindex";
+import { VinePointInputButton } from "./vines";
 import { Game } from "./game";
 
 const canvas = document.querySelector("canvas");
