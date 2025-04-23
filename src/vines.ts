@@ -186,8 +186,8 @@ export class Vines {
         if(camPointBefore !== null && camPointAfter !== null && camPointAfter.t !== camPointBefore.t) {
             const progress = (t - camPointBefore.t) / (camPointAfter.t - camPointBefore.t);
             const easeProgress = easings[camPointAfter.easing ?? "linear"](progress);
-            this.ox = camPointAfter.x * easeProgress + camPointBefore.x * (1 - easeProgress);
-            this.oy = camPointAfter.y * easeProgress + camPointBefore.y * (1 - easeProgress);
+            this.ox = this.canvas.width / 2 - camPointAfter.x * easeProgress - camPointBefore.x * (1 - easeProgress);
+            this.oy = this.canvas.height / 2 - camPointAfter.y * easeProgress - camPointBefore.y * (1 - easeProgress);
             console.log(this.ox, this.oy);
         }
 
