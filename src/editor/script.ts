@@ -67,6 +67,12 @@ const updatePointSelection = () => {
 
     render();
 };
+(document.querySelector("#point-delete") as HTMLButtonElement).addEventListener("click", () => {
+    if(selPoint === null) return;
+    layers[getLayer()].splice(selPoint, 1);
+    selPoint = null;
+    updatePointSelection();
+});
 const cameraControlEl = document.querySelector("#camera") as HTMLDivElement;
 const cameraCX = document.querySelector("#camera-x") as HTMLInputElement;
 const cameraCY = document.querySelector("#camera-y") as HTMLInputElement;
@@ -84,6 +90,12 @@ const updateCameraSelection = () => {
 
     render();
 }
+(document.querySelector("#camera-delete") as HTMLButtonElement).addEventListener("click", () => {
+    if(selCamera === null) return;
+    cameraPoints.splice(selCamera, 1);
+    selCamera = null;
+    updateCameraSelection();
+});
 
 let audio = new Audio();
 const play = () => {
