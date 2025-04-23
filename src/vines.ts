@@ -304,9 +304,13 @@ export class Vines {
         return Number.isNaN(accuracy) ? 0 : accuracy;
     }
 
-    reset() {
-        this.preloaded = [];
+    restart() {
         this.hit = [];
+    }
+
+    reset() {
+        this.restart();
+        this.preloaded = [];
         if(this.audio instanceof HTMLAudioElement) {
             this.audio.pause();
             this.audio.remove();
