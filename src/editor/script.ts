@@ -30,6 +30,10 @@ const calculatePosition = (x: number, y: number) => ({ x: (x + offsetX + width /
 const realPosition = (x: number, y: number, ox: number | null = null, oy: number | null = null) =>
     ({ x: x / scale - width / 2 - (ox === null ? offsetX : ox), y: y / scale - height / 2 - (oy === null ? offsetY : oy) });
 
+(document.querySelector("#layer") as HTMLInputElement).addEventListener("change", () => {
+    selPoint = null;
+});
+
 const timeline = document.querySelector("#timeline") as HTMLDivElement;
 const curEl = document.querySelector("#cur") as HTMLDivElement;
 
@@ -124,9 +128,17 @@ const playOrPause = () => {
     if(playing) pause();
     else play();
 }
-document.addEventListener("keydown", e => {
+canvas.addEventListener("keydown", e => {
     if(e.key === " ")
         playOrPause();
+    else if(e.key === "ArrowUp") {
+        setLayer(getLayer() + 1);
+        selPoint = null;
+    } else if(e.key === "ArrowDown") {
+        if(getLayer() === 0) return;
+        setLayer(getLayer() - 1);
+        selPoint = null;
+    }
 });
 
 (document.querySelector("#offset") as HTMLInputElement).addEventListener("change", e => {
