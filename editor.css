@@ -1,0 +1,136 @@
+:root {
+    --bg: #405cb1;
+    --mg: #98aedd;
+    --fg: #e4eaf6;
+
+    --editor-width: 80vw;
+    --timeline-size: 15vh;
+    --bpm-y: calc(var(--timeline-size) * (1 / 10));
+    --none-y: calc(var(--timeline-size) * (1 / 10));
+    --left-y: calc(var(--timeline-size) * (3 / 10));
+    --middle-y: calc(var(--timeline-size) * (5 / 10));
+    --right-y: calc(var(--timeline-size) * (7 / 10));
+    --camera-y: calc(var(--timeline-size) * (9 / 10));
+
+    --marker-height: 2vh;
+}
+
+* {
+    font-family: sans-serif;
+}
+
+#timeline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--editor-width);
+    height: var(--timeline-size);
+
+    background: url("/beatmark.png");
+    background-size: var(--timeline-size);
+    background-repeat: repeat-x;
+
+    overflow-x: scroll;
+    overflow-y: hidden;
+    background-attachment: local;
+    scrollbar-width: none;
+
+    text-wrap: nowrap;
+}
+#timeline::-webkit-scrollbar {
+    display: none;
+}
+
+#editor {
+    background: var(--bg);
+
+    position: fixed;
+    top: var(--timeline-size);
+    left: 0;
+    width: var(--editor-width);
+    height: calc(100vh - var(--timeline-size));
+    cursor: crosshair;
+}
+
+.m-bpm, .m-left, .m-middle, .m-right, .m-camera, .m-none {
+    position: absolute;
+    cursor: pointer;
+}
+.m-left, .m-middle, .m-right, .m-camera, .m-none {
+    transform: translate(-50%, -50%);
+
+    width: var(--marker-height);
+    height: var(--marker-height);
+    border-radius: 50%;
+    z-index: 1;
+}
+.m-left, .m-middle, .m-right {
+    border: 2px solid var(--bg);
+}
+.m-camera {
+    border: 2px solid var(--mg);
+}
+.m-none {
+    background: #0001;
+}
+.m-bpm {
+    transform: translateY(-50%);
+    z-index: 2;
+}
+
+.m-bpm { top: var(--bpm-y); }
+.m-none { top: var(--none-y); }
+.m-left { top: var(--left-y); }
+.m-middle { top: var(--middle-y); }
+.m-right { top: var(--right-y); }
+.m-camera { top: var(--camera-y); }
+
+#clickables {
+    display: inline-block;
+}
+
+.clickable, #add {
+    width: var(--timeline-size);
+    height: var(--timeline-size);
+    display: inline-block;
+    user-select: none;
+}
+.clickable {
+    cursor: text;
+    color: #0002;
+    white-space: pre;
+}
+#add {
+    background: var(--bg);
+    font-size: calc(var(--timeline-size) * 0.67);
+    color: white;
+    text-align: center;
+    vertical-align: top;
+    cursor: pointer;
+}
+#add::after {
+    content: "+";
+}
+
+#sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: calc(100vw - var(--editor-width));
+    height: 100vh;
+}
+
+#cur {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: var(--timeline-size);
+    background: black;
+    z-index: 3;
+    transform: translateX(-1px);
+}
+
+#point:not(.v), #camera:not(.v) {
+    display: none;
+}

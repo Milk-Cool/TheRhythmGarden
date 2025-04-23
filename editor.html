@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TheRhythmGarden editor</title>
+
+        <link href="editor.css" rel="stylesheet">
+        <script src="src/editor/script.ts" type="module" defer></script>
+    </head>
+    <body>
+        <div id="timeline">
+            <div id="cur"></div>
+            <div id="clickables"></div>
+            <div id="add"></div>
+        </div>
+        <canvas id="editor"></canvas>
+        <div id="sidebar">
+            <button id="save">Save</button>
+            <button id="load">Load</button>
+            <input id="file" type="file" hidden>
+            <br>
+            <label for="snap">Snap: </label>
+            <input id="snap" type="number" min="1" max="20" step="1" value="4"><br>
+            <label for="layer">Layer: </label>
+            <input id="layer" type="number" min="0" max="10000" step="1" value="0"><br>
+            <br>
+            <select id="mode">
+                <option value="points">Edit points</option>
+                <option value="camera">Edit camera</option>
+            </select><br>
+            <br>
+            <label for="audio">Music (MP3): </label><input type="file" accept="audio/mpeg" id="audio"><br>
+            <button id="bpmadd">Add BPM</button><br>
+            <br>
+            <div id="point">
+                <h3>Point properties</h3>
+                <label for="point-x">X: </label><input id="point-x" type="number"><br>
+                <label for="point-y">Y: </label><input id="point-y" type="number"><br>
+                <label for="point-a">Rotation (rad): </label><input id="point-a" type="number" max="7">π<br>
+                <label for="point-t">Time (beats): </label><input id="point-t" type="number" min="0" max="99999"><br>
+                <label for="point-button">Button: </label><select id="point-button">
+                    <option value="none">None</option>
+                    <option value="left">Left</option>
+                    <option value="middle">Middle</option>
+                    <option value="right">Right</option>
+                </select>
+            </div>
+            <div id="camera">
+                <h3>Camera properties</h3>
+                <label for="camera-x">X: </label><input id="camera-x" type="number"><br>
+                <label for="camera-y">Y: </label><input id="camera-y" type="number"><br>
+                <label for="camera-t">Time (beats): </label><input id="camera-t" type="number" min="0" max="99999"><br>
+                <label for="camera-easing">Easing (in): </label><select id="camera-easing">
+                    <option value="linear">Linear</option>
+                    <option value="sine-in">Sine in</option>
+                    <option value="sine-out">Sine out</option>
+                    <option value="sine-in-out">Sine in out</option>
+                </select>
+            </div>
+        </div>
+    </body>
+</html>

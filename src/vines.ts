@@ -43,7 +43,7 @@ type PreloadedSegment = {
     t: number
 };
 
-const lineWidth = 12;
+export const lineWidth = 12;
 const colors = {
     background: "#40593d",
     vineBack: "#76ad6f",
@@ -77,7 +77,7 @@ export class Vines {
     segs: VinePoint[][];
     camera: CameraPoint[];
     audio: HTMLAudioElement | null = null;
-    audioURI: string;
+    audioURI: string | Blob;
     private preloaded: PreloadedSegment[] = [];
     private hit: Hit[][] = [];
     private debug: boolean;
@@ -87,7 +87,7 @@ export class Vines {
 
     private maxTime: number = -1;
 
-    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, segs: VinePoint[][] = [], camera: CameraPoint[] = [], audioURI: string, debug: boolean = false) {
+    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, segs: VinePoint[][] = [], camera: CameraPoint[] = [], audioURI: string | Blob, debug: boolean = false) {
         this.canvas = canvas;
         this.ctx = ctx;
         this.segs = segs;
@@ -110,7 +110,7 @@ export class Vines {
         this.audio = new Audio();
         let loaded = false;
         this.audio.oncanplaythrough = () => loaded = true;
-        this.audio.src = this.audioURI;
+        this.audio.src = this.audioURI instanceof Blob ? URL.createObjectURL(this.audioURI) : this.audioURI;
 
         for(const seg of this.segs) {
             if(seg.length < 2) continue;

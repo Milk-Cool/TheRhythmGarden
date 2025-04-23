@@ -1,14 +1,8 @@
 [
     {
-        "songName": "Test 1",
+        "songName": "Test 3 - editor meta",
         "songAuthor": "-",
         "levelAuthor": "Milk_Cool",
-        "url": "/levels/test1.zip"
-    },
-    {
-        "songName": "Test 2 - audio",
-        "songAuthor": "-",
-        "levelAuthor": "Milk_Cool",
-        "url": "/levels/test2.zip"
+        "url": "/levels/test3.zip"
     }
 ]
