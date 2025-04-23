@@ -77,8 +77,9 @@ export class Game {
     }
 
     startLevel(doneCb: () => void) {
+        if(!this.vines) return;
         this.paused = false;
-        this.t = 0;
+        this.t = -this.vines.offset;
         this.audioPlay();
         this.doneCb = doneCb;
 

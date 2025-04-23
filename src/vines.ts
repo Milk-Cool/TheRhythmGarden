@@ -2,6 +2,7 @@ import { pointsOnBezierCurves, Point } from "points-on-curve";
 import filter from "./antifilter";
 import * as easingFunctions from "./easings";
 import { until } from "./until";
+import { Meta } from "./meta";
 
 export type VinePointInputButton = "left" | "middle" | "right";
 export type VinePointButton = VinePointInputButton | "none";
@@ -78,6 +79,7 @@ export class Vines {
     camera: CameraPoint[];
     audio: HTMLAudioElement | null = null;
     audioURI: string | Blob;
+    offset: number;
     private preloaded: PreloadedSegment[] = [];
     private hit: Hit[][] = [];
     private debug: boolean;
@@ -87,7 +89,7 @@ export class Vines {
 
     private maxTime: number = -1;
 
-    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, segs: VinePoint[][] = [], camera: CameraPoint[] = [], audioURI: string | Blob, debug: boolean = false) {
+    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, segs: VinePoint[][] = [], camera: CameraPoint[] = [], audioURI: string | Blob, meta: Meta, debug: boolean = false) {
         this.canvas = canvas;
         this.ctx = ctx;
         this.segs = segs;
@@ -96,6 +98,8 @@ export class Vines {
 
         this.ctx.filter = filter;
         this.debug = debug;
+
+        this.offset = meta.offset;
     }
 
     private iterPoints(cb: (point: VinePoint, segI: number, pointI: number) => void) {

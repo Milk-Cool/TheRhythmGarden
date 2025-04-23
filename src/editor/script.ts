@@ -2,12 +2,14 @@ import { VinePoint, CameraPoint, lineWidth, VinePointButton, CameraEasing } from
 import { BPM, BPMPoints } from "./bpm";
 import { loadLevelRaw, saveLevel } from "../level";
 import { setFrameHandler } from "../frames";
+import { defaultMeta } from "../meta";
 
 window.addEventListener("beforeunload", e => e.preventDefault());
 
 let bpmPoints: BPMPoints = [{ b: 0, bpm: 120 }];
 let bpmObj = new BPM(bpmPoints);
 let audioFile: Blob | null = null;
+let meta = defaultMeta;
 let cur = 0;
 let playing = false;
 const getSnap = () => parseInt((document.querySelector("#snap") as HTMLInputElement).value);
@@ -95,7 +97,8 @@ const play = () => {
             renderCanvas();
             return true;
         });
-        audio.currentTime = bpmObj.beatToMs(cur) / 1000;
+        console.log(meta);
+        audio.currentTime = bpmObj.beatToMs(cur) / 1000 + meta.offset / 1000;
         audio.play();
         playing = true;
     }, { once: true });
@@ -113,6 +116,12 @@ document.addEventListener("keydown", e => {
     if(e.key === " ")
         playOrPause();
 });
+
+(document.querySelector("#offset") as HTMLInputElement).addEventListener("change", e => {
+    meta.offset = parseFloat((e.target as HTMLInputElement).value);
+});
+const updateOffsetField = () => (document.querySelector("#offset") as HTMLInputElement).value = meta.offset.toString();
+updateOffsetField();
 
 (document.querySelector("#bpmadd") as HTMLButtonElement).addEventListener("click", () => {
     bpmPoints.push({ b: cur, bpm: 120 });
@@ -143,6 +152,9 @@ file.addEventListener("change", async () => {
     selCamera = null;
     updateSelection();
 
+    meta = data.meta;
+    updateOffsetField();
+
     audioFile = data.audioDataURI instanceof Blob ? data.audioDataURI : await (await fetch(data.audioDataURI)).blob();
 
     cur = 0;
@@ -159,6 +171,7 @@ file.addEventListener("change", async () => {
     const saved = await saveLevel({
         segments: layers,
         camera: cameraPoints,
+        meta,
         editorMeta: { bpm: bpmPoints },
         audioDataURI: audioFile === null ? "" : audioFile
     });
