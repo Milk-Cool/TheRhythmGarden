@@ -193,6 +193,9 @@ export class Vines {
             this.ox = this.canvas.width / 2 - camPointAfter.x * easeProgress - camPointBefore.x * (1 - easeProgress);
             this.oy = this.canvas.height / 2 - camPointAfter.y * easeProgress - camPointBefore.y * (1 - easeProgress);
             console.log(this.ox, this.oy);
+        } else if(camPointAfter !== null) {
+            this.ox = this.canvas.width / 2 - camPointAfter.x;
+            this.oy = this.canvas.height / 2 - camPointAfter.y;
         }
 
         this.ctx.fillStyle = colors.background;
