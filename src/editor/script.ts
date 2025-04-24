@@ -316,6 +316,15 @@ const renderCanvas = () => {
             ctx.lineTo(curPos.x, curPos.y);
             ctx.stroke();
         }
+
+        if(getEditMode() === "camera" && parseInt(cameraPointI) === selCamera) {
+            ctx.lineWidth = 2;
+            ctx.globalAlpha = .4;
+            const pos = calculatePosition(cameraPoint.x - width / 2, cameraPoint.y - height / 2);
+            ctx.beginPath();
+            ctx.rect(pos.x, pos.y, width * scale, height * scale);
+            ctx.stroke();
+        }
     }
 
     if(draggingNewPoint) {
