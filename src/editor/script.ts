@@ -138,6 +138,16 @@ canvas.addEventListener("keydown", e => {
         if(getLayer() === 0) return;
         setLayer(getLayer() - 1);
         selPoint = null;
+    } else if(e.key === "1") {
+        setEditMode("points");
+        selCamera = null;
+        selPoint = null;
+        updateSelection();
+    } else if(e.key === "2") {
+        setEditMode("camera");
+        selCamera = null;
+        selPoint = null;
+        updateSelection();
     }
 });
 timeline.addEventListener("keydown", e => {
