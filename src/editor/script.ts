@@ -140,6 +140,10 @@ canvas.addEventListener("keydown", e => {
         selPoint = null;
     }
 });
+timeline.addEventListener("keydown", e => {
+    if(e.key === " ")
+        playOrPause();
+});
 
 (document.querySelector("#offset") as HTMLInputElement).addEventListener("change", e => {
     meta.offset = parseFloat((e.target as HTMLInputElement).value);
