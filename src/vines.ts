@@ -146,7 +146,17 @@ export class Vines {
         else this.audio = null;
     }
 
+    private outOfBounds(x, y) {
+        return x < -this.ox - this.canvas.width - lineWidth
+        || x > -this.ox + this.canvas.width + lineWidth
+        || y < -this.oy - this.canvas.height - lineWidth
+        || y > -this.oy + this.canvas.height + lineWidth;
+    }
+
     private renderSegment(segment: PreloadedSegment, xo = 0, yo = 0) {
+        if(this.outOfBounds(segment.x1 + xo, segment.y1 + yo) && this.outOfBounds(segment.x2 + xo, segment.y2 + yo))
+            return;
+
         this.ctx.beginPath();
         this.ctx.moveTo(this.ox + segment.x1 + xo, this.oy + segment.y1 + yo);
         this.ctx.lineTo(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo);
