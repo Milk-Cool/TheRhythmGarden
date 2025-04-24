@@ -456,6 +456,7 @@ canvas.addEventListener("mouseup", e => {
                 x: newPointX, y: newPointY, button: "none",
                 t: bpmObj.beatToMs(cur)
             });
+            selPoint = inFront;
         } else if(getEditMode() === "camera") {
             let inFront = cameraPoints.findIndex((p) => bpmObj.msToBeat(p.t) > cur);
             if(inFront === -1) inFront = cameraPoints.length;
@@ -464,7 +465,9 @@ canvas.addEventListener("mouseup", e => {
                 x: newPointX, y: newPointY,
                 t: bpmObj.beatToMs(cur)
             });
+            selCamera = inFront;
         }
+        updateSelection();
         render();
         return;
     }
