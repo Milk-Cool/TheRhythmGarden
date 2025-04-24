@@ -491,7 +491,7 @@ const add64Clickables = () => {
         clickable.addEventListener("click", eventHandler);
         clickable.addEventListener("mousemove", eventHandler);
 
-        clickable.innerText = " " + (thisClickable + 1).toString();
+        clickable.innerText = " " + thisClickable.toString();
 
         clickablesEl.appendChild(clickable);
         lastClickable++;
