@@ -541,11 +541,14 @@ const renderTimelineBPM = () => {
             if(Number.isNaN(bpm) || bpm <= 0)
                 return;
             const oldBeats = layers.map(layer => layer.map(p => bpmObj.msToBeat(p.t)));
+            const oldCameras = cameraPoints.map(point => bpmObj.msToBeat(point.t))
             bpmPoints[pointI].bpm = bpm;
             bpmObj = new BPM(bpmPoints);
             for(let i in layers)
                 for(let j in layers[i])
                     layers[i][j].t = bpmObj.beatToMs(oldBeats[i][j]);
+            for(let i in cameraPoints)
+                cameraPoints[i].t = bpmObj.beatToMs(oldCameras[i]);
             render();
         });
         
