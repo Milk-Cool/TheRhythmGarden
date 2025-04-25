@@ -294,10 +294,13 @@ export class Vines {
     }
 
     input(button: VinePointInputButton, t: number) {
+        let hitAlready = false;;
         this.iterPoints((point, segI, pointI) => {
+            if(hitAlready) return;
             const diff = Math.abs(point.t - t);
-            if(point.button !== button || diff > timings.bad)
+            if(point.button !== button || diff > timings.bad || (segI in this.hit && pointI in this.hit[segI]))
                 return;
+            hitAlready = true;
 
             if(diff <= timings.waow)
                 this.hitPoint(segI, pointI, "waow", t);
