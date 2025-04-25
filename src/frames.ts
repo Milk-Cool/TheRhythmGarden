@@ -1,7 +1,7 @@
 export function setFrameHandler(cb: (deltaMs: number) => boolean) {
-    let last = Date.now();
+    let last = window.performance.now();
     const cbInternal = () => {
-        const time = Date.now();
+        const time = window.performance.now();
         if(!cb(time - last)) return;
         last = time;
         window.requestAnimationFrame(cbInternal);
