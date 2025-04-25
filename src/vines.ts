@@ -196,13 +196,13 @@ export class Vines {
             else if(cameraPoint.t > t && (camPointAfter === null || cameraPoint.t < camPointAfter.t))
                 camPointAfter = cameraPoint;
         }
-        console.log(t, camPointBefore, camPointAfter);
+        if(this.debug) console.log(t, camPointBefore, camPointAfter);
         if(camPointBefore !== null && camPointAfter !== null && camPointAfter.t !== camPointBefore.t) {
             const progress = (t - camPointBefore.t) / (camPointAfter.t - camPointBefore.t);
             const easeProgress = easings[camPointAfter.easing ?? "linear"](progress);
             this.ox = this.canvas.width / 2 - camPointAfter.x * easeProgress - camPointBefore.x * (1 - easeProgress);
             this.oy = this.canvas.height / 2 - camPointAfter.y * easeProgress - camPointBefore.y * (1 - easeProgress);
-            console.log(this.ox, this.oy);
+            if(this.debug) console.log(this.ox, this.oy);
         } else if(camPointAfter !== null) {
             this.ox = this.canvas.width / 2 - camPointAfter.x;
             this.oy = this.canvas.height / 2 - camPointAfter.y;
