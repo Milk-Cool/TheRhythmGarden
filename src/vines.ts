@@ -213,6 +213,14 @@ export class Vines {
         // TODO: separate variables
         this.ctx.lineWidth = lineWidth;
 
+        for(const segment of this.segs) {
+            for(const point of segment) {
+                if(point.button === "none") continue;
+                this.ctx.fillStyle = "black";
+                this.ctx.fillRect(this.ox + point.x - 1, this.oy + point.y - 1, 2, 2);
+            }
+        }
+
         this.ctx.strokeStyle = colors.vineBack;
         this.ctx.fillStyle = colors.vineBack;
         this.renderPreloaded(t, -lineWidth / 4, lineWidth / 4);

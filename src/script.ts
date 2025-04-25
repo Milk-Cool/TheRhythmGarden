@@ -6,7 +6,7 @@ if(!canvas) throw new Error("canvas not found!!");
 const ctx = canvas?.getContext("2d");
 if(!ctx) throw new Error("context not found!!");
 
-const game = new Game(canvas, ctx, true);
+const game = new Game(canvas, ctx, false);
 
 document.querySelector("#file")?.addEventListener("change", async e => {
     const input = e.target as HTMLInputElement;
