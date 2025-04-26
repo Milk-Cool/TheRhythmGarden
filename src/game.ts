@@ -84,9 +84,12 @@ export class Game {
         this.audioPlay();
         this.doneCb = doneCb;
 
-        setFrameHandler(deltaMs => {
+        // this.vines.autoplay();
+
+        setFrameHandler((deltaMs, fps) => {
             if(!this.vines) return false;
             if(this.paused) return true;
+            // console.log(fps);
             const done = this.vines.render(this.t += deltaMs);
             if(done) {
                 this.doneCb();

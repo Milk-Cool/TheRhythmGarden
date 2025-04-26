@@ -208,6 +208,15 @@ export class Vines {
         }
     }
 
+    autoplay() {
+        for(const seg of this.segs)
+            for(const p of seg)
+                    setTimeout(() => {
+                        if(p.button !== "none")
+                            this.input(p.button, p.t);
+                    }, p.t + this.offset);
+    }
+
     audioPlay(t: number) {
         if(this.audio === null) return;
         this.audio.currentTime = t / 1000;
