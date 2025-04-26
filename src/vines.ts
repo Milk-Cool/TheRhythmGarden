@@ -79,6 +79,13 @@ const ACCURACY: Record<Timing, number> = {
     "bad": 0.3
 };
 
+const RATINGS_IMAGES: Record<Timing, string> = {
+    "waow": "/public/ratings/waow.png",
+    "good": "/public/ratings/good.png",
+    "ok": "/public/ratings/ok.png",
+    "bad": "/public/ratings/bad.png"
+};
+
 export class Vines {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
@@ -96,6 +103,8 @@ export class Vines {
 
     private maxTime: number = -1;
 
+    private ratingImages: Record<Timing, HTMLImageElement | null>;
+
     constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, segs: VinePoint[][] = [], camera: CameraPoint[] = [], audioURI: string | Blob, meta: Meta, debug: boolean = false) {
         this.canvas = canvas;
         this.ctx = ctx;
@@ -107,6 +116,7 @@ export class Vines {
         this.debug = debug;
 
         this.offset = meta.offset;
+        this.ratingImages = Object.fromEntries(Object.keys(RATINGS_IMAGES).map(x => [x, null])) as Record<Timing, HTMLImageElement | null>;
     }
 
     private iterPoints(cb: (point: VinePoint, segI: number, pointI: number) => void) {
@@ -122,6 +132,13 @@ export class Vines {
         let loaded = false;
         this.audio.oncanplaythrough = () => loaded = true;
         this.audio.src = this.audioURI instanceof Blob ? URL.createObjectURL(this.audioURI) : this.audioURI;
+
+        const loadedImgs = Object.fromEntries(Object.keys(RATINGS_IMAGES).map(x => [x, false])) as Record<Timing, boolean>;
+        for(const [i, x] of Object.entries(RATINGS_IMAGES)) {
+            this.ratingImages[i] = new Image();
+            this.ratingImages[i].addEventListener("load", () => loadedImgs[i] = true);
+            this.ratingImages[i].src = x;
+        }
 
         for(const segI in this.segs) {
             const seg = this.segs[segI];
@@ -153,6 +170,8 @@ export class Vines {
 
         if(this.audioURI) await until(() => loaded);
         else this.audio = null;
+
+        await until(() => !Object.values(loadedImgs).some(Boolean));
     }
 
     private outOfBounds(x, y) {
@@ -252,6 +271,19 @@ export class Vines {
                 this.ctx.lineTo(this.ox + point.x + Math.cos(point.a) * lineWidth, this.oy + point.y + Math.sin(point.a) * lineWidth);
                 this.ctx.stroke();
             });
+        }
+
+        for(const segmentI in this.hit) {
+            const segment = this.hit[segmentI];
+            for(const pointI in segment) {
+                const point = segment[pointI];
+                if(point.t + 500 < t) continue;
+                const pos = this.segs[segmentI][pointI];
+                const img = this.ratingImages[point.timing];
+                if(img === null) continue;
+                // assuming 32x8
+                this.ctx.drawImage(img, Math.round(this.ox + pos.x - 16), Math.round(this.oy + pos.y + 4));
+            }
         }
 
         this.ctx.font = "bold 12pt monospace";
