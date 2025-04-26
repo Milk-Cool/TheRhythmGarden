@@ -196,12 +196,16 @@ export class Vines {
     }
 
     private renderPreloaded(t: number, xo = 0, yo = 0) {
-        for(const segment of this.preloaded)
+        for(const segment of this.preloaded) {
+            let last: PreloadedSegment | null = null;
             for(const line of segment) {
-                if(line.t > t) break;
+                if(last === null && line.t > t) break;
+                if(last !== null && (line.t + last.t) / 2 > t) break;
                 
                 this.renderSegment(line, xo, yo);
+                last = line;
             }
+        }
     }
 
     audioPlay(t: number) {
