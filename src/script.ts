@@ -14,6 +14,11 @@ document.querySelector("#file")?.addEventListener("change", async e => {
     await game.loadLevel(input.files[0]);
 });
 
+const volume = document.querySelector("#volume") as HTMLInputElement;
+const updateVolume = () => game.audioVolume(parseFloat(volume.value));
+volume.addEventListener("change", updateVolume);
+updateVolume();
+
 document.addEventListener("keydown", e => {
     const btn: VinePointInputButton =
         e.key === "x"

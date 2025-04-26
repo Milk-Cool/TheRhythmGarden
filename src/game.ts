@@ -10,6 +10,7 @@ export class Game {
     canvas: HTMLCanvasElement;
     t: number = -1;
     private paused: boolean = true;
+    private volume: number = 1;
 
     private index: LevelIndexLevel[];
     private fileSelect: HTMLInputElement;
@@ -75,12 +76,18 @@ export class Game {
         if(!this.vines) return;
         this.vines.audioPause();
     }
+    audioVolume(vol: number) {
+        this.volume = vol;
+        if(!this.vines) return;
+        this.vines.audioVolume(this.volume);
+    }
 
     startLevel(doneCb: () => void) {
         if(!this.vines) return;
         this.vines.restart();
         this.paused = false;
         this.t = -this.vines.offset;
+        this.vines.audioVolume(this.volume);
         this.audioPlay();
         this.doneCb = doneCb;
 

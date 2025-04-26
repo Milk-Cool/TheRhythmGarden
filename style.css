@@ -39,3 +39,10 @@ canvas {
 #file {
     color: white;
 }
+
+#settings {
+    position: fixed;
+    bottom: 1em;
+    left: 50vw;
+    transform: translateX(-50%);
+}

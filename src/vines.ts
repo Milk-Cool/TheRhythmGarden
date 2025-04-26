@@ -242,6 +242,11 @@ export class Vines {
         this.audio.pause();
     }
 
+    audioVolume(vol: number) {
+        if(this.audio === null) return;
+        this.audio.volume = vol;
+    }
+
     render(t: number): boolean {
         if(t > this.maxTime + 1000) return true;
 
