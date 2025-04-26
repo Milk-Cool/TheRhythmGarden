@@ -72,6 +72,13 @@ const btnIndicatorBefore = 1500;
 const btnIndicatorAfter = 300;
 const btnIndicatorFade = 300;
 
+const ACCURACY: Record<Timing, number> = {
+    "waow": 1,
+    "good": 0.8,
+    "ok": 0.6,
+    "bad": 0.3
+};
+
 export class Vines {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
@@ -323,7 +330,7 @@ export class Vines {
             const wasHit = segI in this.hit && pointI in this.hit[segI];
             if(wasHit) {
                 n++;
-                score += timings.waow / timings[this.hit[segI][pointI].timing];
+                score += ACCURACY[this.hit[segI][pointI].timing];
             } else if(t > point.t + timings.bad)
                 n++;
         });
