@@ -185,11 +185,13 @@ export class Vines {
         if(this.outOfBounds(segment.x1 + xo, segment.y1 + yo) && this.outOfBounds(segment.x2 + xo, segment.y2 + yo))
             return;
 
-        this.ctx.beginPath();
-        this.ctx.moveTo(this.ox + segment.x1 + xo, this.oy + segment.y1 + yo);
+        // this.ctx.beginPath();
+        // this.ctx.moveTo(this.ox + segment.x1 + xo, this.oy + segment.y1 + yo);
         this.ctx.lineTo(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo);
-        this.ctx.stroke();
+        // this.ctx.stroke();
+    }
 
+    private renderSegmentEnd(segment: PreloadedSegment, xo, yo) {
         this.ctx.beginPath();
         this.ctx.arc(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo, lineWidth / 2, 0, Math.PI * 2);
         this.ctx.fill();
@@ -197,6 +199,14 @@ export class Vines {
 
     private renderPreloaded(t: number, xo = 0, yo = 0) {
         for(const segment of this.preloaded) {
+            if(segment.length === 0) continue;
+
+            const first = segment[0];
+            if(first.t > t) continue;
+            this.renderSegmentEnd(first, xo, yo);
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.ox + first.x1 + xo, this.oy + first.y1 + yo);
+
             let last: PreloadedSegment | null = null;
             for(const line of segment) {
                 if(last === null && line.t > t) break;
@@ -205,6 +215,10 @@ export class Vines {
                 this.renderSegment(line, xo, yo);
                 last = line;
             }
+
+            this.ctx.stroke();
+
+            if(last !== null) this.renderSegmentEnd(last, xo, yo);
         }
     }
 
