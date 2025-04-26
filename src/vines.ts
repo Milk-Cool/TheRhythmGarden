@@ -80,7 +80,7 @@ export class Vines {
     audio: HTMLAudioElement | null = null;
     audioURI: string | Blob;
     offset: number;
-    private preloaded: PreloadedSegment[] = [];
+    private preloaded: PreloadedSegment[][] = [];
     private hit: Hit[][] = [];
     private debug: boolean;
 
@@ -116,8 +116,10 @@ export class Vines {
         this.audio.oncanplaythrough = () => loaded = true;
         this.audio.src = this.audioURI instanceof Blob ? URL.createObjectURL(this.audioURI) : this.audioURI;
 
-        for(const seg of this.segs) {
+        for(const segI in this.segs) {
+            const seg = this.segs[segI];
             if(seg.length < 2) continue;
+            this.preloaded[segI] = [];
             for(let i = 1; i < seg.length; i++) {
                 const cur = seg[i], last = seg[i - 1];
                 this.maxTime = Math.max(this.maxTime, cur.t, last.t);
@@ -127,7 +129,7 @@ export class Vines {
                 const curve: Point[] = [[last.x, last.y], [plast.x, plast.y], [pcur.x, pcur.y], [cur.x, cur.y]];
                 const points = pointsOnBezierCurves(curve, tolerance);
                 for(let j = 1; j < points.length; j++)
-                    this.preloaded.push({
+                    this.preloaded[segI].push({
                         t: last.t + (cur.t - last.t) * (j / points.length),
                         x1: points[j - 1][0],
                         y1: points[j - 1][1],
@@ -168,11 +170,12 @@ export class Vines {
     }
 
     private renderPreloaded(t: number, xo = 0, yo = 0) {
-        for(const segment of this.preloaded) {
-            if(segment.t > t) continue;
-            
-            this.renderSegment(segment, xo, yo);
-        }
+        for(const segment of this.preloaded)
+            for(const line of segment) {
+                if(line.t > t) break;
+                
+                this.renderSegment(line, xo, yo);
+            }
     }
 
     audioPlay(t: number) {
