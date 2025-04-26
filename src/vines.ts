@@ -63,9 +63,19 @@ const timings = {
 };
 export type Timing = keyof typeof timings;
 
+const flowerFrames = 4;
+const flowerFrameInterval = 50;
+const flowerColors: Record<string, string> = {
+    "red": "/flower/red%n.png",
+    "white": "/flower/white%n.png"
+};
+export type FlowerColor = keyof typeof flowerColors;
+
 type Hit = {
     timing: Timing,
-    t: number
+    t: number,
+    color: FlowerColor,
+    rot: number
 };
 
 const btnIndicatorBefore = 1500;
@@ -104,6 +114,7 @@ export class Vines {
     private maxTime: number = -1;
 
     private ratingImages: Record<Timing, HTMLImageElement | null>;
+    private flowerImages: Record<FlowerColor, HTMLImageElement[]> = {};
 
     constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, segs: VinePoint[][] = [], camera: CameraPoint[] = [], audioURI: string | Blob, meta: Meta, debug: boolean = false) {
         this.canvas = canvas;
@@ -140,6 +151,19 @@ export class Vines {
             this.ratingImages[i].src = x;
         }
 
+        const loadedFlowers: boolean[] = [];
+        let n = 0;
+        for(const flowerColor of Object.keys(flowerColors)) {
+            this.flowerImages[flowerColor] = [...new Array(flowerFrames).keys()].map((_x, i) => {
+                const img = new Image();
+                loadedFlowers.push(false);
+                const thisN = n++;
+                img.addEventListener("load", () => { loadedFlowers[thisN] = true; });
+                img.src = flowerColors[flowerColor].replace("%n", (i + 1).toString());
+                return img;
+            });
+        }
+
         for(const segI in this.segs) {
             const seg = this.segs[segI];
             if(seg.length < 2) continue;
@@ -172,6 +196,7 @@ export class Vines {
         else this.audio = null;
 
         await until(() => !Object.values(loadedImgs).some(Boolean));
+        await until(() => !Object.values(loadedFlowers).some(Boolean));
     }
 
     private outOfBounds(x, y) {
@@ -309,8 +334,18 @@ export class Vines {
             const segment = this.hit[segmentI];
             for(const pointI in segment) {
                 const point = segment[pointI];
-                if(point.t + 500 < t) continue;
                 const pos = this.segs[segmentI][pointI];
+
+                const frame = Math.min(Math.floor((t - point.t) / flowerFrameInterval), flowerFrames - 1);
+                const flowerX = Math.round(this.ox + pos.x), flowerY = Math.round(this.oy + pos.y);
+                this.ctx.save();
+                this.ctx.translate(flowerX, flowerY);
+                this.ctx.rotate(point.rot);
+                // assuming 32x32
+                this.ctx.drawImage(this.flowerImages[point.color][frame], -16, -16);
+                this.ctx.restore();
+
+                if(point.t + 500 < t) continue;
                 const img = this.ratingImages[point.timing];
                 if(img === null) continue;
                 // assuming 32x8
@@ -361,7 +396,10 @@ export class Vines {
         if(!(segI in this.hit))
             this.hit[segI] = [];
         if(!(pointI in this.hit[segI]))
-            this.hit[segI][pointI] = { timing, t };
+            this.hit[segI][pointI] = {
+                timing, t, rot: Math.random() * Math.PI * 2,
+                color: Object.keys(flowerColors)[Math.floor(Math.random() * Object.keys(flowerColors).length)] as FlowerColor
+            };
 
         if(this.debug)
             console.log("hit!", segI, pointI, timing);
