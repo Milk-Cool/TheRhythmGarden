@@ -80,10 +80,10 @@ const ACCURACY: Record<Timing, number> = {
 };
 
 const RATINGS_IMAGES: Record<Timing, string> = {
-    "waow": "/public/ratings/waow.png",
-    "good": "/public/ratings/good.png",
-    "ok": "/public/ratings/ok.png",
-    "bad": "/public/ratings/bad.png"
+    "waow": "/ratings/waow.png",
+    "good": "/ratings/good.png",
+    "ok": "/ratings/ok.png",
+    "bad": "/ratings/bad.png"
 };
 
 export class Vines {
