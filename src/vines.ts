@@ -125,7 +125,7 @@ export class Vines {
         });
     }
 
-    async preload(tolerance = 7) {
+    async preload(tolerance = .5) {
         if(this.segs.length < 1) return;
 
         this.audio = new Audio();
