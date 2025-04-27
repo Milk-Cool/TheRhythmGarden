@@ -387,8 +387,12 @@ export class Vines {
 
         this.ctx.font = "bold 9pt monospace";
         this.ctx.textBaseline = "top";
+        this.ctx.fillStyle = "black";
+        for(let x = -1; x <= 1; x ++)
+            for(let y = -1; y <= 1; y++) {
+                this.ctx.fillText(`accuracy: ${this.accuracy(t).toFixed(2)}%`, this.canvas.width / 2 + x, 5 + y);
+            }
         this.ctx.fillStyle = colors.hud;
-        this.ctx.beginPath();
         this.ctx.fillText(`accuracy: ${this.accuracy(t).toFixed(2)}%`, this.canvas.width / 2, 5);
 
         return false;
