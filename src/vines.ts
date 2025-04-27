@@ -96,6 +96,8 @@ const RATINGS_IMAGES: Record<Timing, string> = {
     "bad": "/ratings/bad.png"
 };
 
+type LineState = "none" | "line";
+
 export class Vines {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
@@ -208,24 +210,24 @@ export class Vines {
         || y > -this.oy + this.canvas.height + lineWidth;
     }
 
-    private renderSegment(segment: PreloadedSegment, n = 0, xo = 0, yo = 0) {
-        if(this.outOfBounds(segment.x1 + xo, segment.y1 + yo) && this.outOfBounds(segment.x2 + xo, segment.y2 + yo))
+    private lineState: LineState = "none";
+
+    private renderSegment(segment: PreloadedSegment, xo = 0, yo = 0) {
+        if(this.outOfBounds(segment.x1 + xo, segment.y1 + yo) && this.outOfBounds(segment.x2 + xo, segment.y2 + yo)) {
+            if(this.lineState !== "none") {
+                this.ctx.stroke();
+                this.lineState = "none";
+            }
             return;
-
-        if(n === 0) {
-            this.ctx.moveTo(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo);
-            return this.renderSegmentEnd(segment, xo, yo);
         }
-        // this.ctx.beginPath();
-        // this.ctx.moveTo(this.ox + segment.x1 + xo, this.oy + segment.y1 + yo);
-        this.ctx.lineTo(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo);
-        // this.ctx.stroke();
-    }
 
-    private renderSegmentEnd(segment: PreloadedSegment, xo, yo) {
-        this.ctx.beginPath();
-        this.ctx.arc(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo, lineWidth / 2, 0, Math.PI * 2);
-        this.ctx.fill();
+        if(this.lineState === "none") {
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo);
+            this.lineState = "line";
+            return;
+        }
+        this.ctx.lineTo(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo);
     }
 
     private renderPreloaded(t: number, xo = 0, yo = 0) {
@@ -234,21 +236,18 @@ export class Vines {
 
             const first = segment[0];
             if(first.t > t) continue;
-            this.ctx.beginPath();
+            this.lineState = "none";
 
             let last: PreloadedSegment | null = null;
-            let n = 0;
             for(const line of segment) {
                 if(last === null && line.t > t) break;
                 if(last !== null && (line.t + last.t) / 2 > t) break;
                 
-                this.renderSegment(line, n++, xo, yo);
+                this.renderSegment(line, xo, yo);
                 last = line;
             }
 
             this.ctx.stroke();
-
-            if(last !== null) this.renderSegmentEnd(last, xo, yo);
         }
     }
 
@@ -312,6 +311,8 @@ export class Vines {
             }
         }
 
+        this.ctx.lineCap = "round";
+
         this.ctx.strokeStyle = colors.vineBack;
         this.ctx.fillStyle = colors.vineBack;
         this.renderPreloaded(t, -lineWidth / 4, lineWidth / 4);
@@ -319,6 +320,8 @@ export class Vines {
         this.ctx.strokeStyle = colors.vineFront;
         this.ctx.fillStyle = colors.vineFront;
         this.renderPreloaded(t);
+
+        this.ctx.lineCap = "round";
 
         if(this.debug) {
             this.ctx.strokeStyle = "red";
