@@ -208,10 +208,14 @@ export class Vines {
         || y > -this.oy + this.canvas.height + lineWidth;
     }
 
-    private renderSegment(segment: PreloadedSegment, xo = 0, yo = 0) {
+    private renderSegment(segment: PreloadedSegment, n = 0, xo = 0, yo = 0) {
         if(this.outOfBounds(segment.x1 + xo, segment.y1 + yo) && this.outOfBounds(segment.x2 + xo, segment.y2 + yo))
             return;
 
+        if(n === 0) {
+            this.ctx.moveTo(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo);
+            return this.renderSegmentEnd(segment, xo, yo);
+        }
         // this.ctx.beginPath();
         // this.ctx.moveTo(this.ox + segment.x1 + xo, this.oy + segment.y1 + yo);
         this.ctx.lineTo(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo);
@@ -230,16 +234,15 @@ export class Vines {
 
             const first = segment[0];
             if(first.t > t) continue;
-            this.renderSegmentEnd(first, xo, yo);
             this.ctx.beginPath();
-            this.ctx.moveTo(this.ox + first.x1 + xo, this.oy + first.y1 + yo);
 
             let last: PreloadedSegment | null = null;
+            let n = 0;
             for(const line of segment) {
                 if(last === null && line.t > t) break;
                 if(last !== null && (line.t + last.t) / 2 > t) break;
                 
-                this.renderSegment(line, xo, yo);
+                this.renderSegment(line, n++, xo, yo);
                 last = line;
             }
 
