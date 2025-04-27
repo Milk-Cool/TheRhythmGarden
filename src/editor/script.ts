@@ -161,6 +161,12 @@ timeline.addEventListener("keydown", e => {
 const updateOffsetField = () => (document.querySelector("#offset") as HTMLInputElement).value = meta.offset.toString();
 updateOffsetField();
 
+(document.querySelector("#startpos") as HTMLInputElement).addEventListener("change", e => {
+    meta.startPos = bpmObj.beatToMs(parseFloat((e.target as HTMLInputElement).value));
+});
+const updateStartPos = () => (document.querySelector("#startpos") as HTMLInputElement).value = bpmObj.msToBeat(meta.startPos ?? 0).toString();
+updateStartPos();
+
 (document.querySelector("#bpmadd") as HTMLButtonElement).addEventListener("click", () => {
     bpmPoints.push({ b: cur, bpm: 120 });
     bpmObj = new BPM(bpmPoints);
@@ -191,7 +197,9 @@ file.addEventListener("change", async () => {
     updateSelection();
 
     meta = data.meta;
+    meta.startPos = meta.startPos ?? 0;
     updateOffsetField();
+    updateStartPos();
 
     audioFile = data.audioDataURI instanceof Blob ? data.audioDataURI : await (await fetch(data.audioDataURI)).blob();
 

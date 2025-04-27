@@ -86,7 +86,7 @@ export class Game {
         if(!this.vines) return;
         this.vines.restart();
         this.paused = false;
-        this.t = -this.vines.offset;
+        this.t = this.vines.startPos === 0 ? -this.vines.offset : this.vines.startPos;
         this.vines.audioVolume(this.volume);
         this.audioPlay();
         this.doneCb = doneCb;

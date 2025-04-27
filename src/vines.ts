@@ -104,6 +104,7 @@ export class Vines {
     audio: HTMLAudioElement | null = null;
     audioURI: string | Blob;
     offset: number;
+    startPos: number;
     private preloaded: PreloadedSegment[][] = [];
     private hit: Hit[][] = [];
     private debug: boolean;
@@ -127,6 +128,7 @@ export class Vines {
         this.debug = debug;
 
         this.offset = meta.offset;
+        this.startPos = meta.startPos ?? 0;
         this.ratingImages = Object.fromEntries(Object.keys(RATINGS_IMAGES).map(x => [x, null])) as Record<Timing, HTMLImageElement | null>;
     }
 
@@ -433,7 +435,7 @@ export class Vines {
             if(wasHit) {
                 n++;
                 score += ACCURACY[this.hit[segI][pointI].timing];
-            } else if(t > point.t + timings.bad)
+            } else if(point.t > this.startPos && t > point.t + timings.bad)
                 n++;
         });
         const accuracy = (score / n) * 100;

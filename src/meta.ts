@@ -1,7 +1,9 @@
 export type Meta = {
-    offset: number
+    offset: number,
+    startPos?: number
 };
 
 export const defaultMeta: Meta = {
-    offset: 0
+    offset: 0,
+    startPos: 0
 };
