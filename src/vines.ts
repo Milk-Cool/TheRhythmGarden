@@ -258,7 +258,7 @@ export class Vines {
 
     audioPlay(t: number) {
         if(this.audio === null) return;
-        this.audio.currentTime = t / 1000;
+        this.audio.currentTime = (t + this.offset) / 1000;
         this.audio.play();
     }
 
