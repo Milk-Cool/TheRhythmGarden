@@ -223,7 +223,8 @@ export class Vines {
 
         if(this.lineState === "none") {
             this.ctx.beginPath();
-            this.ctx.moveTo(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo);
+            this.ctx.moveTo(this.ox + segment.x1 + xo, this.oy + segment.y1 + yo);
+            this.ctx.lineTo(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo);
             this.lineState = "line";
             return;
         }
@@ -234,8 +235,6 @@ export class Vines {
         for(const segment of this.preloaded) {
             if(segment.length === 0) continue;
 
-            const first = segment[0];
-            if(first.t > t) continue;
             this.lineState = "none";
 
             let last: PreloadedSegment | null = null;
