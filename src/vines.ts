@@ -321,7 +321,7 @@ export class Vines {
         this.ctx.fillStyle = colors.vineFront;
         this.renderPreloaded(t);
 
-        this.ctx.lineCap = "round";
+        this.ctx.lineCap = "butt";
 
         if(this.debug) {
             this.ctx.strokeStyle = "red";
