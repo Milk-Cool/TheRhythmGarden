@@ -28,6 +28,7 @@ export class Game {
             if(!this.fileSelect.files || this.fileSelect.files.length === 0)
                 return;
             await this.loadLevel(this.fileSelect.files[0]);
+            this.fileSelect.files = null;
         });
     }
 
