@@ -204,30 +204,13 @@ export class Vines {
     }
 
     private outOfBounds(x, y) {
-        return x < -this.ox - this.canvas.width - lineWidth
+        return x < -this.ox - lineWidth
         || x > -this.ox + this.canvas.width + lineWidth
-        || y < -this.oy - this.canvas.height - lineWidth
+        || y < -this.oy - lineWidth
         || y > -this.oy + this.canvas.height + lineWidth;
     }
 
-    private lineState: LineState = "none";
-
     private renderSegment(segment: PreloadedSegment, xo = 0, yo = 0) {
-        if(this.outOfBounds(segment.x1 + xo, segment.y1 + yo) && this.outOfBounds(segment.x2 + xo, segment.y2 + yo)) {
-            if(this.lineState !== "none") {
-                this.ctx.stroke();
-                this.lineState = "none";
-            }
-            return;
-        }
-
-        if(this.lineState === "none") {
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.ox + segment.x1 + xo, this.oy + segment.y1 + yo);
-            this.ctx.lineTo(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo);
-            this.lineState = "line";
-            return;
-        }
         this.ctx.lineTo(this.ox + segment.x2 + xo, this.oy + segment.y2 + yo);
     }
 
@@ -235,7 +218,9 @@ export class Vines {
         for(const segment of this.preloaded) {
             if(segment.length === 0) continue;
 
-            this.lineState = "none";
+            const first = segment[0];
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.ox + first.x1 + xo, this.oy + first.y1 + yo);
 
             let last: PreloadedSegment | null = null;
             for(const line of segment) {
