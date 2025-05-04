@@ -20,6 +20,10 @@ export type VinePoint = {
     y: number,
     a: number
 };
+export type VinePointSorted = VinePoint & {
+    seg?: number,
+    point?: number
+};
 
 export type CameraEasing = "sine-in-out" | "sine-in" | "sine-out" | "linear";
 export const easings: Record<CameraEasing, (x: number) => number> = {
@@ -102,6 +106,7 @@ export class Vines {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     segs: VinePoint[][];
+    private segsSorted: VinePointSorted[];
     camera: CameraPoint[];
     audio: HTMLAudioElement | null = null;
     audioURI: string | Blob;
@@ -126,6 +131,12 @@ export class Vines {
         this.camera = camera;
         this.audioURI = audioURI;
 
+        this.segsSorted = (structuredClone(this.segs) as VinePointSorted[][]).map((x, i) => x.map((y, j) => {
+            y.seg = i;
+            y.point = j;
+            return y;
+        })).flat(1).sort((a, b) => a.t - b.t);
+        
         this.ctx.filter = filter;
         this.debug = debug;
 
@@ -138,6 +149,10 @@ export class Vines {
         this.segs.forEach((seg, segI) => {
             seg.forEach((point, pointI) => cb(point, segI, pointI));
         });
+    }
+
+    private iterPointsSorted(cb: (point: VinePointSorted, segI: number, pointI: number) => void) {
+        this.segsSorted.forEach((point, pointI) => cb(point, point.seg as number, point.point as number));
     }
 
     async preload(tolerance = .5) {
@@ -403,7 +418,7 @@ export class Vines {
 
     input(button: VinePointInputButton, t: number) {
         let hitAlready = false;;
-        this.iterPoints((point, segI, pointI) => {
+        this.iterPointsSorted((point, segI, pointI) => {
             if(hitAlready) return;
             const diff = Math.abs(point.t - t);
             if(point.button !== button || diff > timings.bad || (segI in this.hit && pointI in this.hit[segI]))
