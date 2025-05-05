@@ -1,5 +1,5 @@
 :root {
-    --width: min(100vw, calc(100vh * 320 / 180));
+    --width: min(100vw, calc(100vh * 480 / 270));
     --height: auto;
 }
 

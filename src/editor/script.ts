@@ -24,7 +24,7 @@ let selCamera: number | null = null;
 
 let scale = 2;
 let offsetX = 0, offsetY = 0;
-const width = 320, height = 180;
+const width = 480, height = 270;
 
 const calculatePosition = (x: number, y: number) => ({ x: (x + offsetX + width / 2) * scale, y: (y + offsetY + height / 2) * scale });
 const realPosition = (x: number, y: number, ox: number | null = null, oy: number | null = null) =>
