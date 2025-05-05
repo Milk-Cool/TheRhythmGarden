@@ -12,6 +12,11 @@ const indicators: Record<VinePointInputButton, string> = {
     "middle": "M",
     "right": "R"
 }
+const indicatorColors: Record<VinePointInputButton, string> = {
+    "left": "#f2b396",
+    "middle": "#f2f196",
+    "right": "#96d5f2"
+}
 
 export type VinePoint = {
     t: number,
@@ -57,7 +62,7 @@ const colors = {
     vineFront: "#82c27a",
     keyBack: "#7f7f7f",
     keyBackHit: "#467d55",
-    keyFront: "#ffffff",
+    // keyFront: "#ffffff",
     hud: "#ffffff"
 };
 
@@ -399,7 +404,7 @@ export class Vines {
             this.ctx.lineTo(this.ox + point.x - 10, this.oy + point.y - 10);
             this.ctx.fill();
 
-            this.ctx.fillStyle = colors.keyFront;
+            this.ctx.fillStyle = indicatorColors[point.button];
 
             this.ctx.beginPath();
             this.ctx.fillText(indicators[point.button], this.ox + point.x, this.oy + point.y - 20);
