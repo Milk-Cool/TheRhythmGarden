@@ -52,7 +52,7 @@ export const lineWidth = 12;
 const colors = {
     background: "#40593d",
     indicatorBack: "#2f402d",
-    indicatorFront: "#83bd7d",
+    indicatorFront: "#6c9e67",
     vineBack: "#76ad6f",
     vineFront: "#82c27a",
     keyBack: "#7f7f7f",
@@ -314,16 +314,14 @@ export class Vines {
 
                 const diff = point.t - t;
                 if(diff < 1000 && diff > 0) {
-                    const opacity = Math.max(diff / 300, 1);
-                    this.ctx.globalAlpha = opacity;
+                    const rad = Math.min((1000 - diff) / 300, 1) * Math.PI * 2;
                     this.ctx.strokeStyle = colors.indicatorFront;
                     this.ctx.lineWidth = 1;
                     this.ctx.beginPath();
-                    this.ctx.arc(this.ox + point.x, this.oy + point.y, lineWidth / 2 * (diff + 300) / 300, 0, Math.PI * 2);
+                    this.ctx.arc(this.ox + point.x, this.oy + point.y, lineWidth / 2 * (diff + 300) / 300, 0, rad);
                     this.ctx.stroke();
 
                     this.ctx.lineWidth = lineWidth;
-                    this.ctx.globalAlpha = 1;
                 }
             }
         }
