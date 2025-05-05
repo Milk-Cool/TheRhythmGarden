@@ -51,6 +51,8 @@ type PreloadedSegment = {
 export const lineWidth = 12;
 const colors = {
     background: "#40593d",
+    indicatorBack: "#2f402d",
+    indicatorFront: "#83bd7d",
     vineBack: "#76ad6f",
     vineFront: "#82c27a",
     keyBack: "#7f7f7f",
@@ -305,8 +307,24 @@ export class Vines {
         for(const segment of this.segs) {
             for(const point of segment) {
                 if(point.button === "none") continue;
-                this.ctx.fillStyle = "black";
-                this.ctx.fillRect(this.ox + point.x - 1, this.oy + point.y - 1, 2, 2);
+                this.ctx.fillStyle = colors.indicatorBack;
+                this.ctx.beginPath();
+                this.ctx.arc(this.ox + point.x, this.oy + point.y, lineWidth / 2, 0, Math.PI * 2);
+                this.ctx.fill();
+
+                const diff = point.t - t;
+                if(diff < 1000 && diff > 0) {
+                    const opacity = Math.max(diff / 300, 1);
+                    this.ctx.globalAlpha = opacity;
+                    this.ctx.strokeStyle = colors.indicatorFront;
+                    this.ctx.lineWidth = 1;
+                    this.ctx.beginPath();
+                    this.ctx.arc(this.ox + point.x, this.oy + point.y, lineWidth / 2 * (diff + 300) / 300, 0, Math.PI * 2);
+                    this.ctx.stroke();
+
+                    this.ctx.lineWidth = lineWidth;
+                    this.ctx.globalAlpha = 1;
+                }
             }
         }
 
