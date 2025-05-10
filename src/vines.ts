@@ -107,8 +107,6 @@ const RATINGS_IMAGES: Record<Timing, string> = {
     "bad": "/ratings/bad.png"
 };
 
-type LineState = "none" | "line";
-
 export class Vines {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
