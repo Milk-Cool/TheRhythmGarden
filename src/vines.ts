@@ -58,6 +58,7 @@ const colors = {
     background: "#40593d",
     indicatorBack: "#2f402d",
     indicatorFront: "#6c9e67",
+    indicatorHit: "#fefefe",
     vineBack: "#76ad6f",
     vineFront: "#82c27a",
     keyBack: "#7f7f7f",
@@ -280,6 +281,10 @@ export class Vines {
         this.audio.volume = vol;
     }
 
+    private getAngle(a, b) {
+        return (a * b) % (Math.PI * 2);
+    }
+
     render(t: number): boolean {
         if(t > this.maxTime + 1000) return true;
 
@@ -307,8 +312,10 @@ export class Vines {
         // TODO: separate variables
         this.ctx.lineWidth = lineWidth;
 
-        for(const segment of this.segs) {
-            for(const point of segment) {
+        for(const segmentI in this.segs) {
+            const segment = this.segs[segmentI];
+            for(const pointI in segment) {
+                const point = segment[pointI];
                 if(point.button === "none") continue;
                 this.ctx.fillStyle = colors.indicatorBack;
                 this.ctx.beginPath();
@@ -317,11 +324,12 @@ export class Vines {
 
                 const diff = point.t - t;
                 if(diff < 1000 && diff > 0) {
+                    const start = this.getAngle(segmentI, pointI)
                     const rad = Math.min((1000 - diff) / 300, 1) * Math.PI * 2;
                     this.ctx.strokeStyle = colors.indicatorFront;
                     this.ctx.lineWidth = 1;
                     this.ctx.beginPath();
-                    this.ctx.arc(this.ox + point.x, this.oy + point.y, lineWidth / 2 * (diff + 300) / 300, 0, rad);
+                    this.ctx.arc(this.ox + point.x, this.oy + point.y, lineWidth / 2 * (diff + 300) / 300, start, start + rad);
                     this.ctx.stroke();
 
                     this.ctx.lineWidth = lineWidth;
@@ -376,6 +384,27 @@ export class Vines {
                 if(img === null) continue;
                 // assuming 32x8
                 this.ctx.drawImage(img, Math.round(this.ox + pos.x - 16), Math.round(this.oy + pos.y + 4));
+            }
+        }
+
+        for(const segmentI in this.hit) {
+            const segment = this.hit[segmentI];
+            for(const pointI in segment) {
+                const point = this.segs[segmentI][pointI];
+                const hitPoint = segment[pointI];
+
+                const diff = t - hitPoint.t;
+                if(diff > 300) continue;
+                const start = this.getAngle(segmentI, pointI);
+                const rad = Math.max(diff / -300, -1) * Math.PI * 2;
+
+                this.ctx.strokeStyle = colors.indicatorHit;
+                this.ctx.lineWidth = 1;
+                this.ctx.beginPath();
+                this.ctx.arc(this.ox + point.x, this.oy + point.y, lineWidth / 2 * diff / 100, start, diff === 300 ? start : start + rad);
+                this.ctx.stroke();
+
+                this.ctx.lineWidth = lineWidth;
             }
         }
 
