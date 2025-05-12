@@ -56,12 +56,14 @@
     position: absolute;
     cursor: pointer;
 }
+.m-left, .m-middle, .m-right, .m-none {
+    border-radius: 50%;
+}
 .m-left, .m-middle, .m-right, .m-camera, .m-none {
     transform: translate(-50%, -50%);
 
     width: var(--marker-height);
     height: var(--marker-height);
-    border-radius: 50%;
     z-index: 1;
 }
 .m-left, .m-middle, .m-right {
