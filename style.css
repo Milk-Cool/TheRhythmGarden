@@ -54,3 +54,13 @@ canvas {
     text-align: center;
     font-family: monospace;
 }
+
+.indexlvl {
+    background: rgb(0, 97, 48);
+    color: white;
+    padding: 1em;
+    border: 3px solid white;
+}
+.indexlvl.active {
+    background: rgb(0, 97, 73);
+}

@@ -36,7 +36,13 @@ play.addEventListener("click", async () => {
     win.levelSelect.style.display = "none";
 });
 
-document.querySelector("#open")?.addEventListener("click", () => game.openFile());
+let active: HTMLButtonElement | null = null;
+
+document.querySelector("#open")?.addEventListener("click", () => {
+    game.openFile();
+    if(active !== null) active.classList.remove("active");
+    active = null;
+});
 
 const indexEl = document.querySelector("#index") as HTMLDivElement;
 game.initIndex().then(() => {
@@ -44,8 +50,22 @@ game.initIndex().then(() => {
         indexEl.appendChild(document.createElement("br"));
 
         const levelButton = document.createElement("button");
-        levelButton.innerText = level.songName;
-        levelButton.addEventListener("click", async () => await game.loadIndexLevel(i));
+        levelButton.classList.add("indexlvl");
+
+        const levelName = document.createElement("h2");
+        levelName.innerText = level.songName;
+        levelButton.appendChild(levelName);
+
+        const levelAuthor = document.createElement("p");
+        levelAuthor.innerText = `${level.songAuthor} | level by ${level.levelAuthor}`;
+        levelButton.appendChild(levelAuthor);
+
+        levelButton.addEventListener("click", async () => {
+            if(active !== null) active.classList.remove("active");
+            active = levelButton;
+            levelButton.classList.add("active");
+            await game.loadIndexLevel(i)
+        });
         indexEl.appendChild(levelButton);
     });
 });
