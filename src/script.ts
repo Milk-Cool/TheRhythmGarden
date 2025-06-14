@@ -12,12 +12,6 @@ const win = {
     levelSelect: document.querySelector("#winLevelSelect") as HTMLDivElement
 };
 
-document.querySelector("#file")?.addEventListener("change", async e => {
-    const input = e.target as HTMLInputElement;
-    if(!input.files || !input.files.length) return;
-    await game.loadLevel(input.files[0]);
-});
-
 const volume = document.querySelector("#volume") as HTMLInputElement;
 const updateVolume = () => game.audioVolume(parseFloat(volume.value));
 volume.addEventListener("change", updateVolume);
