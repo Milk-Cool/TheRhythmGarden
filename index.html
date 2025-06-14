@@ -9,14 +9,16 @@
         <script src="src/script.ts" type="module" defer></script>
     </head>
     <body>
-        <div id="index"></div>
-        <div id="settings">
-            <input type="range" min="0" max="1" step="0.01" value="0.8" id="volume">
-        </div>
-        <div class="play">
+        <div class="win" id="winLevelSelect">
+            <h1>Select level</h1>
+            <div id="index"></div><br>
+
             <button id="open">Open</button>
             <input id="file" type="file">
             <button id="play">Play</button>
+        </div>
+        <div id="settings">
+            <input type="range" min="0" max="1" step="0.01" value="0.8" id="volume">
         </div>
         <canvas width="480" height="270"></canvas>
     </body>

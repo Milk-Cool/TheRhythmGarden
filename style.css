@@ -20,18 +20,6 @@ canvas {
     image-rendering: pixelated;
 }
 
-.play {
-    position: fixed;
-    bottom: 1em;
-    right: 1em;
-}
-
-#index {
-    position: fixed;
-    bottom: 1em;
-    left: 1em;
-}
-
 #index > button, .play > button {
     cursor: pointer;
 }
@@ -45,4 +33,24 @@ canvas {
     bottom: 1em;
     left: 50vw;
     transform: translateX(-50%);
+}
+
+.win {
+    background: #2e805e;
+    background-clip: padding-box;
+    border: 48px solid transparent;
+    border-image: url("/menus/border.png") calc(100% / 6) round;
+    image-rendering: pixelated;
+
+    position: fixed;
+    width: 60vw;
+    height: 60vh;
+    top: 50vh;
+    left: 50vw;
+    transform: translate(-50%, -50%);
+}
+.win, .win a {
+    color: white;
+    text-align: center;
+    font-family: monospace;
 }

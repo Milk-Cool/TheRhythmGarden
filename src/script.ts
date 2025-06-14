@@ -8,6 +8,10 @@ if(!ctx) throw new Error("context not found!!");
 
 const game = new Game(canvas, ctx, false);
 
+const win = {
+    levelSelect: document.querySelector("#winLevelSelect") as HTMLDivElement
+};
+
 document.querySelector("#file")?.addEventListener("change", async e => {
     const input = e.target as HTMLInputElement;
     if(!input.files || !input.files.length) return;
@@ -33,9 +37,9 @@ document.addEventListener("keydown", e => {
 });
 const play = document.querySelector("#play") as HTMLButtonElement;
 play.addEventListener("click", async () => {
-    game.startLevel(() => play.disabled = false);
+    game.startLevel(() => win.levelSelect.style.display = "unset");
 
-    play.disabled = true;
+    win.levelSelect.style.display = "none";
 });
 
 document.querySelector("#open")?.addEventListener("click", () => game.openFile());
