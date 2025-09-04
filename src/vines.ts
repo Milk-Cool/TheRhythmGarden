@@ -372,12 +372,16 @@ export class Vines {
 
                 const frame = Math.min(Math.floor((t - point.t) / flowerFrameInterval), flowerFrames - 1);
                 const flowerX = Math.round(this.ox + pos.x), flowerY = Math.round(this.oy + pos.y);
-                this.ctx.save();
-                this.ctx.translate(flowerX, flowerY);
-                this.ctx.rotate(point.rot);
-                // assuming 32x32
-                this.ctx.drawImage(this.flowerImages[point.color][frame], -16, -16);
-                this.ctx.restore();
+                const sqrt2 = Math.sqrt(2);
+                if(flowerX >= -32 * sqrt2 && flowerX <= this.canvas.width + 32 * sqrt2
+                    && flowerY >= -32 * sqrt2 && flowerY <= this.canvas.height + 32 * sqrt2) {
+                    this.ctx.save();
+                    this.ctx.translate(flowerX, flowerY);
+                    this.ctx.rotate(point.rot);
+                    // assuming 32x32
+                    this.ctx.drawImage(this.flowerImages[point.color][frame], -16, -16);
+                    this.ctx.restore();
+                }
 
                 if(point.t + 500 < t) continue;
                 const img = this.ratingImages[point.timing];
