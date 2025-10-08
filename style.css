@@ -36,7 +36,7 @@ canvas {
 }
 
 .win {
-    background: #2e805e;
+    background: #37946e;
     background-clip: padding-box;
     border: 48px solid transparent;
     border-image: url("/menus/border.png") calc(100% / 6) round;
