@@ -164,8 +164,23 @@ updateOffsetField();
 (document.querySelector("#startpos") as HTMLInputElement).addEventListener("change", e => {
     meta.startPos = bpmObj.beatToMs(parseFloat((e.target as HTMLInputElement).value));
 });
+(document.querySelector("#songname") as HTMLInputElement).addEventListener("change", e => {
+    meta.songName = (e.target as HTMLInputElement).value;
+});
+(document.querySelector("#songproducer") as HTMLInputElement).addEventListener("change", e => {
+    meta.songProducer = (e.target as HTMLInputElement).value;
+});
+(document.querySelector("#levelauthor") as HTMLInputElement).addEventListener("change", e => {
+    meta.levelAuthor = (e.target as HTMLInputElement).value;
+});
 const updateStartPos = () => (document.querySelector("#startpos") as HTMLInputElement).value = bpmObj.msToBeat(meta.startPos ?? 0).toString();
 updateStartPos();
+const updateLevelMetadata = () => {
+    (document.querySelector("#songname") as HTMLInputElement).value = meta.songName;
+    (document.querySelector("#songproducer") as HTMLInputElement).value = meta.songProducer;
+    (document.querySelector("#levelauthor") as HTMLInputElement).value = meta.levelAuthor;
+};
+updateLevelMetadata();
 
 (document.querySelector("#bpmadd") as HTMLButtonElement).addEventListener("click", () => {
     bpmPoints.push({ b: cur, bpm: 120 });
@@ -200,6 +215,7 @@ file.addEventListener("change", async () => {
     meta.startPos = meta.startPos ?? 0;
     updateOffsetField();
     updateStartPos();
+    updateLevelMetadata();
 
     audioFile = data.audioDataURI instanceof Blob ? data.audioDataURI : await (await fetch(data.audioDataURI)).blob();
 
