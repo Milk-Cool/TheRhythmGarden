@@ -1,5 +1,5 @@
 import { VinePoint, CameraPoint, lineWidth, VinePointButton, CameraEasing } from "../vines";
-import { BPM, BPMPoints } from "./bpm";
+import { BPM, BPMPoints } from "../bpm";
 import { loadLevelRaw, saveLevel } from "../level";
 import { setFrameHandler } from "../frames";
 import { defaultMeta } from "../meta";

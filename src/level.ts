@@ -50,9 +50,10 @@ export async function loadLevelRaw(blob: Blob): Promise<Loaded> {
 }
 
 export async function loadLevel(blob: Blob, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, debug: boolean = false): Promise<Vines> {
-    const { segments, camera, audioDataURI, meta } = await loadLevelRaw(blob);
+    const { segments, camera, audioDataURI, meta, editorMeta } = await loadLevelRaw(blob);
+    if(editorMeta === null) throw new Error("Editor meta is now required, but was not found!");
 
-    return new Vines(canvas, ctx, segments, camera, audioDataURI, meta, debug);
+    return new Vines(canvas, ctx, segments, camera, audioDataURI, meta, editorMeta, debug);
 }
 
 export async function saveLevel(level: Loaded): Promise<Blob> {

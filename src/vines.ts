@@ -3,6 +3,8 @@ import filter from "./antifilter";
 import * as easingFunctions from "./easings";
 import { until } from "./until";
 import { Meta } from "./meta";
+import { BPM } from "./bpm";
+import { EditorMeta } from "./editor/editor";
 
 export type VinePointInputButton = "left" | "middle" | "right";
 export type VinePointButton = VinePointInputButton | "none";
@@ -83,6 +85,11 @@ const flowerColors: Record<string, string> = {
 };
 export type FlowerColor = keyof typeof flowerColors;
 
+const hitSounds = [
+    "/sounds/hihatpart.mp3",
+    "/sounds/hihatclosed.mp3"
+];
+
 type Hit = {
     timing: Timing,
     t: number,
@@ -130,11 +137,15 @@ export class Vines {
     private ratingImages: Record<Timing, HTMLImageElement | null>;
     private flowerImages: Record<FlowerColor, HTMLImageElement[]> = {};
 
-    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, segs: VinePoint[][] = [], camera: CameraPoint[] = [], audioURI: string | Blob, meta: Meta, debug: boolean = false) {
+    private hitSounds: HTMLAudioElement[] = [];
+    private bpm: BPM;
+
+    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, segs: VinePoint[][] = [], camera: CameraPoint[] = [], audioURI: string | Blob, meta: Meta, editorMeta: EditorMeta, debug: boolean = false) {
         this.canvas = canvas;
         this.ctx = ctx;
         this.segs = segs;
         this.camera = camera;
+        this.bpm = new BPM(editorMeta.bpm);
         this.audioURI = audioURI;
 
         this.segsSorted = (structuredClone(this.segs) as VinePointSorted[][]).map((x, i) => x.map((y, j) => {
@@ -189,6 +200,16 @@ export class Vines {
             });
         }
 
+        const loadedHitSounds: boolean[] = [];
+        let m = 0;
+        for(const hitSoundURL of hitSounds) {
+            const thisM = m++;
+            const hitSound = new Audio(hitSoundURL);
+            hitSound.addEventListener("load", () => { loadedHitSounds[thisM] = true; });
+            loadedHitSounds.push(false);
+            this.hitSounds.push(hitSound);
+        }
+
         for(const segI in this.segs) {
             const seg = this.segs[segI];
             if(seg.length < 2) continue;
@@ -222,6 +243,7 @@ export class Vines {
 
         await until(() => !Object.values(loadedImgs).some(Boolean));
         await until(() => !Object.values(loadedFlowers).some(Boolean));
+        await until(() => !Object.values(loadedHitSounds).some(Boolean));
     }
 
     private outOfBounds(x, y) {
@@ -455,6 +477,11 @@ export class Vines {
         return false;
     }
 
+    private playHitSound(n: number) {
+        this.hitSounds[n].currentTime = 0;
+        this.hitSounds[n].play();
+    }
+
     private hitPoint(segI: number, pointI: number, timing: Timing, t: number) {
         if(!(segI in this.hit))
             this.hit[segI] = [];
@@ -463,6 +490,12 @@ export class Vines {
                 timing, t, rot: Math.random() * Math.PI * 2,
                 color: Object.keys(flowerColors)[Math.floor(Math.random() * Object.keys(flowerColors).length)] as FlowerColor
             };
+
+        const pointT = this.bpm.msToBeat(this.segs[segI][pointI].t);
+        if(Math.abs(pointT - Math.round(pointT)) < 0.01 && Math.round(pointT) % 2 === 0)
+            this.playHitSound(0);
+        else
+            this.playHitSound(1);
 
         if(this.debug)
             console.log("hit!", segI, pointI, timing);

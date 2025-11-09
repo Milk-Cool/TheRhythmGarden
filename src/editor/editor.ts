@@ -1,4 +1,4 @@
-import { BPMPoints } from "./bpm";
+import { BPMPoints } from "../bpm";
 
 export type EditorMeta = {
     bpm: BPMPoints
