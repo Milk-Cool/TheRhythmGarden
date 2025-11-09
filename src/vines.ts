@@ -464,16 +464,20 @@ export class Vines {
         });
         this.ctx.globalAlpha = 1;
 
-        this.ctx.font = "bold 12pt monospace";
+        this.ctx.font = "bold 11pt monospace";
         this.ctx.textBaseline = "top";
         this.ctx.textAlign = "left";
         this.ctx.fillStyle = "black";
+        const acc = this.accuracy(t).toFixed(2);
+        const score = this.score(t);
         for(let x = -1; x <= 1; x ++)
             for(let y = -1; y <= 1; y++) {
-                this.ctx.fillText(`accuracy: ${this.accuracy(t).toFixed(2)}%`, 5 + x, 5 + y);
+                this.ctx.fillText(`accuracy: ${acc}%`, 5 + x, 5 + y);
+                this.ctx.fillText(`score: ${score}`, 5 + x, 22 + y);
             }
         this.ctx.fillStyle = colors.hud;
-        this.ctx.fillText(`accuracy: ${this.accuracy(t).toFixed(2)}%`, 5, 5);
+        this.ctx.fillText(`accuracy: ${acc}%`, 5, 5);
+        this.ctx.fillText(`score: ${score}`, 5, 22);
 
         return false;
     }
@@ -522,7 +526,7 @@ export class Vines {
         });
     }
 
-    accuracy(t: number) {
+    accuracy(t: number, multiplier: number = 100, countAll: boolean = false) {
         let n = 0, score = 0;
         this.iterPoints((point, segI, pointI) => {
             if(point.button === "none") return;
@@ -530,11 +534,14 @@ export class Vines {
             if(wasHit) {
                 n++;
                 score += ACCURACY[this.hit[segI][pointI].timing];
-            } else if(point.t > this.startPos && t > point.t + timings.bad)
+            } else if((point.t > this.startPos && t > point.t + timings.bad) || countAll)
                 n++;
         });
-        const accuracy = (score / n) * 100;
+        const accuracy = (score / n) * multiplier;
         return Number.isNaN(accuracy) ? 0 : accuracy;
+    }
+    score(t: number) {
+        return Math.floor(this.accuracy(t, 1000000, true));
     }
 
     restart() {
