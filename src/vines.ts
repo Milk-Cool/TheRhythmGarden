@@ -464,15 +464,16 @@ export class Vines {
         });
         this.ctx.globalAlpha = 1;
 
-        this.ctx.font = "bold 9pt monospace";
+        this.ctx.font = "bold 12pt monospace";
         this.ctx.textBaseline = "top";
+        this.ctx.textAlign = "left";
         this.ctx.fillStyle = "black";
         for(let x = -1; x <= 1; x ++)
             for(let y = -1; y <= 1; y++) {
-                this.ctx.fillText(`accuracy: ${this.accuracy(t).toFixed(2)}%`, this.canvas.width / 2 + x, 5 + y);
+                this.ctx.fillText(`accuracy: ${this.accuracy(t).toFixed(2)}%`, 5 + x, 5 + y);
             }
         this.ctx.fillStyle = colors.hud;
-        this.ctx.fillText(`accuracy: ${this.accuracy(t).toFixed(2)}%`, this.canvas.width / 2, 5);
+        this.ctx.fillText(`accuracy: ${this.accuracy(t).toFixed(2)}%`, 5, 5);
 
         return false;
     }
