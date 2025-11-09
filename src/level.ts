@@ -23,6 +23,7 @@ export async function loadLevelRaw(blob: Blob): Promise<Loaded> {
         audioDataURI: string | Blob = "";
     for(const entry of entries) {
         if(!ALLOWED.includes(entry.filename)) continue;
+        if(entry.directory) continue;
         if(entry.filename === SEGMENTS_FILENAME) {
             const text = await entry.getData?.(new zip.TextWriter());
             if(text === undefined) continue;
