@@ -96,12 +96,21 @@ type Hit = {
     color: FlowerColor,
     rot: number
 };
+type Missed = {
+    t: number
+};
 
 const btnIndicatorBefore = 1500;
 const btnIndicatorAfter = 300;
 const btnIndicatorFade = 300;
 
 const ACCURACY: Record<Timing, number> = {
+    "waow": 1,
+    "good": 0.8,
+    "ok": 0.6,
+    "bad": 0.3
+};
+const SCORE_MULTIPLIERS: Record<Timing, number> = {
     "waow": 1,
     "good": 0.8,
     "ok": 0.6,
@@ -120,6 +129,7 @@ export class Vines {
     ctx: CanvasRenderingContext2D;
     segs: VinePoint[][];
     private segsSorted: VinePointSorted[];
+    private maxHitsCount: number;
     camera: CameraPoint[];
     audio: HTMLAudioElement | null = null;
     audioURI: string | Blob;
@@ -127,7 +137,13 @@ export class Vines {
     startPos: number;
     private preloaded: PreloadedSegment[][] = [];
     private hit: Hit[][] = [];
+    private missed: Missed[][] = [];
     private debug: boolean;
+
+    combo: number = 0;
+    private comboMultiplier: number = 0;
+    scoreRaw: number = 0;
+    private scoreBase: number = 0;
 
     private ox = 0;
     private oy = 0;
@@ -153,6 +169,8 @@ export class Vines {
             y.point = j;
             return y;
         })).flat(1).sort((a, b) => a.t - b.t);
+        this.maxHitsCount = this.segs.flat(1).filter(x => x.button !== "none").length;
+        this.scoreBase = 1_000_000 / (this.maxHitsCount * (this.maxHitsCount + 1) / 2);
         
         this.ctx.filter = filter;
         this.debug = debug;
@@ -310,6 +328,9 @@ export class Vines {
     render(t: number): boolean {
         if(t > this.maxTime + 1000) return true;
 
+        // also check for missed hits... yes, in render()
+        this.checkForMissed(t);
+
         let camPointBefore: CameraPoint | null = null, camPointAfter: CameraPoint | null = null;
         for(const cameraPoint of this.camera) {
             if(cameraPoint.t <= t && (camPointBefore === null || cameraPoint.t > camPointBefore.t))
@@ -465,21 +486,40 @@ export class Vines {
         this.ctx.globalAlpha = 1;
 
         this.ctx.font = "bold 11pt monospace";
-        this.ctx.textBaseline = "top";
         this.ctx.textAlign = "left";
         this.ctx.fillStyle = "black";
         const acc = this.accuracy(t).toFixed(2);
-        const score = this.score(t);
+        const score = this.score;
         for(let x = -1; x <= 1; x ++)
             for(let y = -1; y <= 1; y++) {
+                this.ctx.textBaseline = "top";
                 this.ctx.fillText(`accuracy: ${acc}%`, 5 + x, 5 + y);
                 this.ctx.fillText(`score: ${score}`, 5 + x, 22 + y);
+                this.ctx.textBaseline = "bottom";
+                this.ctx.fillText(`combo: ${this.combo}`, 5 + x, this.canvas.height - 5 + y);
             }
         this.ctx.fillStyle = colors.hud;
+        this.ctx.textBaseline = "top";
         this.ctx.fillText(`accuracy: ${acc}%`, 5, 5);
         this.ctx.fillText(`score: ${score}`, 5, 22);
+        this.ctx.textBaseline = "bottom";
+        this.ctx.fillText(`combo: ${this.combo}`, 5, this.canvas.height - 5);
+        this.ctx.textBaseline = "top";
 
         return false;
+    }
+
+    private checkForMissed(t: number) {
+        this.iterPoints((point, segI, pointI) => {
+            if(point.button === "none") return;
+            if(!(t - point.t > timings.bad && (!(segI in this.hit) || !(pointI in this.hit[segI])))) return;
+            if(!(segI in this.missed))
+                this.missed[segI] = [];
+            if(!(pointI in this.missed[segI])) {
+                this.missed[segI][pointI] = { t };
+                this.resetCombo();
+            }
+        });
     }
 
     private playHitSound(n: number) {
@@ -495,6 +535,8 @@ export class Vines {
                 timing, t, rot: Math.random() * Math.PI * 2,
                 color: Object.keys(flowerColors)[Math.floor(Math.random() * Object.keys(flowerColors).length)] as FlowerColor
             };
+
+        this.addScore(SCORE_MULTIPLIERS[timing]);
 
         const pointT = this.bpm.msToBeat(this.segs[segI][pointI].t);
         if(Math.abs(pointT - Math.round(pointT)) < 0.01 && Math.round(pointT) % 2 === 0)
@@ -540,12 +582,23 @@ export class Vines {
         const accuracy = (score / n) * multiplier;
         return Number.isNaN(accuracy) ? 0 : accuracy;
     }
-    score(t: number) {
-        return Math.floor(this.accuracy(t, 1000000, true));
+    get score() {
+        return Math.round(this.scoreRaw);
+    }
+    private resetCombo(full = false) {
+        this.combo = 0;
+        this.comboMultiplier = full ? 0 : Math.floor(this.comboMultiplier / 2);
+    }
+    private addScore(multiplier = 1) {
+        this.combo++;
+        this.comboMultiplier++;
+        this.scoreRaw += this.comboMultiplier * this.scoreBase * multiplier;
     }
 
     restart() {
         this.hit = [];
+        this.resetCombo(true);
+        this.scoreRaw = 0;
     }
 
     reset() {
