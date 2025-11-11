@@ -616,13 +616,13 @@ export class Vines {
     get rank(): RankWithImage {
         const acc = this.accuracy();
         const rank: Rank =
-            acc > 95
+            acc >= 95
             ? "s"
-            : acc > 85
+            : acc >= 85
             ? "a"
-            : acc > 75
+            : acc >= 75
             ? "b"
-            : acc > 50
+            : acc >= 50
             ? "c"
             : "f";
         return { rank, image: RANKS_IMAGES[rank] };
