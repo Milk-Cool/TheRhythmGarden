@@ -77,6 +77,8 @@ const timings = {
 };
 export type Timing = keyof typeof timings;
 
+export type Rank = "s" | "a" | "b" | "c" | "f";
+
 const flowerFrames = 4;
 const flowerFrameInterval = 50;
 const flowerColors: Record<string, string> = {
@@ -123,6 +125,15 @@ const RATINGS_IMAGES: Record<Timing, string> = {
     "ok": "/ratings/ok.png",
     "bad": "/ratings/bad.png"
 };
+
+const RANKS_IMAGES: Record<Rank, string> = {
+    "s": "/ranks/s.png",
+    "a": "/ranks/a.png",
+    "b": "/ranks/b.png",
+    "c": "/ranks/c.png",
+    "f": "/ranks/f.png"
+};
+type RankWithImage = { rank: Rank, image: string };
 
 export class Vines {
     canvas: HTMLCanvasElement;
@@ -568,7 +579,7 @@ export class Vines {
         });
     }
 
-    accuracy(t: number, multiplier: number = 100, countAll: boolean = false) {
+    accuracy(t: number = this.maxTime + 1, multiplier: number = 100, countAll: boolean = false) {
         let n = 0, score = 0;
         this.iterPoints((point, segI, pointI) => {
             if(point.button === "none") return;
@@ -593,6 +604,28 @@ export class Vines {
         this.combo++;
         this.comboMultiplier++;
         this.scoreRaw += this.comboMultiplier * this.scoreBase * multiplier;
+    }
+
+    ratings(timing: Timing) {
+        return this.hit.flat().filter(x => x.timing === timing).length;
+    }
+    misses() {
+        return this.missed.flat().length;
+    }
+
+    get rank(): RankWithImage {
+        const acc = this.accuracy();
+        const rank: Rank =
+            acc > 95
+            ? "s"
+            : acc > 85
+            ? "a"
+            : acc > 75
+            ? "b"
+            : acc > 50
+            ? "c"
+            : "f";
+        return { rank, image: RANKS_IMAGES[rank] };
     }
 
     restart() {

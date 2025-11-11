@@ -1,6 +1,7 @@
 :root {
     --width: min(100vw, calc(100vh * 480 / 270));
     --height: auto;
+    --bg: #37946e;
 }
 
 body {
@@ -36,7 +37,7 @@ canvas {
 }
 
 .win {
-    background: #37946e;
+    background: var(--bg);
     background-clip: padding-box;
     border: 48px solid transparent;
     border-image: url("/menus/border.png") calc(100% / 6) round;
@@ -49,7 +50,7 @@ canvas {
     left: 50vw;
     transform: translate(-50%, -50%);
 }
-.win, .win a {
+.win, .win a, button {
     color: white;
     text-align: center;
     font-family: monospace;
@@ -63,4 +64,56 @@ canvas {
 }
 .indexlvl.active {
     background: rgb(0, 97, 73);
+}
+
+#ratings > div > img {
+    image-rendering: pixelated;
+    width: 128px;
+    height: 32px;
+}
+#ratings > div > span {
+    font-size: xx-large;
+    min-width: 5em;
+}
+#ratings > div {
+    display: flex;
+    flex-direction: row;
+    margin: .25em;
+    justify-content: center;
+}
+#results {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 60%;
+}
+#ratings, #rank {
+    width: 50%;
+}
+#rank > div {
+    font-size: x-large;
+}
+
+#winResults {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#winResults > button {
+    width: fit-content;
+}
+
+#rankImg {
+    width: 112px;
+    height: 112px;
+}
+
+button {
+    background: #37946e;
+    border: 2px solid black;
+    margin: .5em;
+    padding: .5em;
+    font-size: larger;
+    cursor: pointer;
 }

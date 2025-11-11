@@ -9,8 +9,11 @@ if(!ctx) throw new Error("context not found!!");
 const game = new Game(canvas, ctx, false);
 
 const win = {
-    levelSelect: document.querySelector("#winLevelSelect") as HTMLDivElement
+    levelSelect: document.querySelector("#winLevelSelect") as HTMLDivElement,
+    results: document.querySelector("#winResults") as HTMLDivElement,
 };
+
+win.results.style.display = "none";
 
 const volume = document.querySelector("#volume") as HTMLInputElement;
 const updateVolume = () => game.audioVolume(parseFloat(volume.value));
@@ -31,7 +34,22 @@ document.addEventListener("keydown", e => {
 });
 const play = document.querySelector("#play") as HTMLButtonElement;
 play.addEventListener("click", async () => {
-    game.startLevel(() => win.levelSelect.style.display = "unset");
+    game.startLevel(() => {
+        win.results.style.display = "unset";
+        if(!game.vines) return;
+
+        (document.querySelector("#score") as HTMLSpanElement).innerText = game.vines.score.toString();
+        (document.querySelector("#combo") as HTMLSpanElement).innerText = game.vines.combo.toString();
+        (document.querySelector("#accuracy") as HTMLSpanElement).innerText = game.vines.accuracy().toFixed(2);
+
+        (document.querySelector("#ratingsWaow") as HTMLSpanElement).innerText = game.vines.ratings("waow").toString();
+        (document.querySelector("#ratingsGood") as HTMLSpanElement).innerText = game.vines.ratings("good").toString();
+        (document.querySelector("#ratingsOk") as HTMLSpanElement).innerText = game.vines.ratings("ok").toString();
+        (document.querySelector("#ratingsBad") as HTMLSpanElement).innerText = game.vines.ratings("bad").toString();
+        (document.querySelector("#ratingsMiss") as HTMLSpanElement).innerText = game.vines.misses().toString();
+
+        (document.querySelector("#rankImg") as HTMLImageElement).src = game.vines.rank.image;
+    });
 
     win.levelSelect.style.display = "none";
 });
@@ -42,6 +60,11 @@ document.querySelector("#open")?.addEventListener("click", () => {
     game.openFile();
     if(active !== null) active.classList.remove("active");
     active = null;
+});
+
+document.querySelector("#closeResults")?.addEventListener("click", () => {
+    win.results.style.display = "none";
+    win.levelSelect.style.display = "unset";
 });
 
 const indexEl = document.querySelector("#index") as HTMLDivElement;
