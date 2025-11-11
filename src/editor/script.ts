@@ -561,12 +561,14 @@ const renderTimelineBPM = () => {
         el.style.left = `calc(var(--timeline-size) * ${point.b})`;
 
         el.addEventListener("click", () => {
-            const bpm = parseFloat(prompt("Enter BPM:", point.bpm.toString()) ?? "");
-            if(Number.isNaN(bpm) || bpm <= 0)
+            const bpmStr = prompt("Enter BPM:", point.bpm.toString()) ?? "";
+            const bpm = parseFloat(bpmStr);
+            if((Number.isNaN(bpm) || bpm <= 0) && bpmStr !== "")
                 return;
             const oldBeats = layers.map(layer => layer.map(p => bpmObj.msToBeat(p.t)));
             const oldCameras = cameraPoints.map(point => bpmObj.msToBeat(point.t))
-            bpmPoints[pointI].bpm = bpm;
+            if(bpmStr === "") bpmPoints = bpmPoints.filter((_x, i) => i !== parseInt(pointI));
+            else bpmPoints[pointI].bpm = bpm;
             bpmObj = new BPM(bpmPoints);
             for(let i in layers)
                 for(let j in layers[i])
