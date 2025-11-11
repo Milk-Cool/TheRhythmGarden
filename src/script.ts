@@ -11,9 +11,11 @@ const game = new Game(canvas, ctx, false);
 const win = {
     levelSelect: document.querySelector("#winLevelSelect") as HTMLDivElement,
     results: document.querySelector("#winResults") as HTMLDivElement,
+    settings: document.querySelector("#winSettings") as HTMLDivElement,
 };
 
 win.results.style.display = "none";
+win.settings.style.display = "none";
 
 const volume = document.querySelector("#volume") as HTMLInputElement;
 const updateVolume = () => game.audioVolume(parseFloat(volume.value));
@@ -34,6 +36,8 @@ document.addEventListener("keydown", e => {
 });
 const play = document.querySelector("#play") as HTMLButtonElement;
 play.addEventListener("click", async () => {
+    game.vines?.toggleHitSounds((document.querySelector("#hitsounds") as HTMLInputElement).checked);
+
     game.startLevel(() => {
         win.results.style.display = "unset";
         if(!game.vines) return;
@@ -66,6 +70,8 @@ document.querySelector("#closeResults")?.addEventListener("click", () => {
     win.results.style.display = "none";
     win.levelSelect.style.display = "unset";
 });
+document.querySelector("#openSettings")?.addEventListener("click", () => win.settings.style.display = "unset");
+document.querySelector("#closeSettings")?.addEventListener("click", () => win.settings.style.display = "none");
 
 const indexEl = document.querySelector("#index") as HTMLDivElement;
 game.initIndex().then(() => {

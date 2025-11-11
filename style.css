@@ -29,13 +29,6 @@ canvas {
     color: white;
 }
 
-#settings {
-    position: fixed;
-    bottom: 1em;
-    left: 50vw;
-    transform: translateX(-50%);
-}
-
 .win {
     background: var(--bg);
     background-clip: padding-box;
@@ -116,4 +109,8 @@ button {
     padding: .5em;
     font-size: larger;
     cursor: pointer;
+}
+
+#winSettings {
+    font-size: x-large;
 }

@@ -13,6 +13,7 @@
             <h1>Select level</h1>
             <div id="index"></div><br>
 
+            <button id="openSettings">Settings</button>
             <button id="open">Open</button>
             <button id="play">Play</button>
         </div>
@@ -35,8 +36,11 @@
             </div>
             <button id="closeResults">Close</button>
         </div>
-        <div id="settings">
-            <input type="range" min="0" max="1" step="0.01" value="0.8" id="volume">
+        <div class="win" id="winSettings">
+            <h1>Settings</h1>
+            <label for="volume">Volume</label><br><input type="range" min="0" max="1" step="0.01" value="0.8" id="volume"><br>
+            <label for="hitsounds">Hit sounds</label><input type="checkbox" id="hitsounds" checked><br>
+            <button id="closeSettings">Close</button>
         </div>
         <canvas width="480" height="270"></canvas>
     </body>

@@ -165,6 +165,7 @@ export class Vines {
     private flowerImages: Record<FlowerColor, HTMLImageElement[]> = {};
 
     private hitSounds: HTMLAudioElement[] = [];
+    private hitSoundsEnabled: boolean = true;
     private bpm: BPM;
 
     constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, segs: VinePoint[][] = [], camera: CameraPoint[] = [], audioURI: string | Blob, meta: Meta, editorMeta: EditorMeta, debug: boolean = false) {
@@ -330,6 +331,10 @@ export class Vines {
     audioVolume(vol: number) {
         if(this.audio === null) return;
         this.audio.volume = vol;
+    }
+
+    toggleHitSounds(val: boolean) {
+        this.hitSoundsEnabled = val;
     }
 
     private getAngle(a, b) {
@@ -534,6 +539,7 @@ export class Vines {
     }
 
     private playHitSound(n: number) {
+        if(!this.hitSoundsEnabled) return;
         this.hitSounds[n].currentTime = 0;
         this.hitSounds[n].play();
     }
