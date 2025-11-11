@@ -1,5 +1,6 @@
 import { VinePointInputButton } from "./vines";
 import { Game } from "./game";
+import { getSetting, setSetting } from "./settings";
 
 const canvas = document.querySelector("canvas");
 if(!canvas) throw new Error("canvas not found!!");
@@ -18,9 +19,18 @@ win.results.style.display = "none";
 win.settings.style.display = "none";
 
 const volume = document.querySelector("#volume") as HTMLInputElement;
-const updateVolume = () => game.audioVolume(parseFloat(volume.value));
+const updateVolume = () => {
+    game.audioVolume(parseFloat(volume.value));
+    setSetting("volume", parseFloat(volume.value));
+}
 volume.addEventListener("change", updateVolume);
+volume.value = getSetting("volume").toString();
 updateVolume();
+
+const hitSounds = document.querySelector("#hitsounds") as HTMLInputElement;
+const updateHitSounds = () => setSetting("hitSounds", hitSounds.checked);
+hitSounds.addEventListener("change", updateHitSounds);
+hitSounds.checked = getSetting("hitSounds") === true;
 
 document.addEventListener("keydown", e => {
     const btn: VinePointInputButton =
