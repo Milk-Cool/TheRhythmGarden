@@ -86,7 +86,7 @@ document.querySelector("#closeSettings")?.addEventListener("click", () => win.se
 const indexEl = document.querySelector("#index") as HTMLDivElement;
 game.initIndex().then(() => {
     game.getIndex().forEach((level, i) => {
-        indexEl.appendChild(document.createElement("br"));
+        // indexEl.appendChild(document.createElement("br"));
 
         const levelButton = document.createElement("button");
         levelButton.classList.add("indexlvl");

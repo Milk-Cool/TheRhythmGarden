@@ -9,6 +9,11 @@ body {
     background: black;
 }
 
+* {
+    scrollbar-width: thin;
+    scrollbar-color: white var(--bg);
+}
+
 canvas {
     position: fixed;
     left: 50vw;
@@ -23,6 +28,11 @@ canvas {
 
 #index > button, .play > button {
     cursor: pointer;
+}
+
+#index {
+    max-height: 70%;
+    overflow-y: scroll;
 }
 
 #file {
@@ -54,6 +64,7 @@ canvas {
     color: white;
     padding: 1em;
     border: 3px solid white;
+    font-size: small;
 }
 .indexlvl.active {
     background: rgb(0, 97, 73);
