@@ -56,12 +56,13 @@ export class Game {
         this.paused = true;
     }
 
-    async loadIndexLevel(i: number) {
+    async loadIndexLevel(i: number, cb?: () => void | Promise<void>) {
         if(!this.index) return;
         const level = this.index[i];
         
         const f = await fetch(level.url);
         const blob = await f.blob();
+        if(cb) await cb();
         await this.loadLevel(blob);
     }
 

@@ -106,9 +106,10 @@ game.initIndex().then(() => {
 
             play.disabled = true;
             play.innerText = "Loading";
-            await game.loadIndexLevel(i)
-            play.disabled = false;
-            play.innerText = "Play";
+            await game.loadIndexLevel(i, () => {
+                play.disabled = false;
+                play.innerText = "Play";
+            });
         });
         indexEl.appendChild(levelButton);
     });
