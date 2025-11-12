@@ -31,7 +31,7 @@ canvas {
 }
 
 #index {
-    max-height: 70%;
+    max-height: 55%;
     overflow-y: scroll;
 }
 
@@ -124,4 +124,10 @@ button {
 
 #winSettings {
     font-size: x-large;
+}
+
+.logo {
+    width: 192px;
+    margin-top: 8px;
+    filter: drop-shadow(0 0 8px #0006);
 }
