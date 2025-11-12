@@ -1,4 +1,4 @@
-const INDEX_URL = "/levels/index.json";
+const INDEX_URL = "https://gardenlevels.milkcool.hackclub.app";
 
 export type LevelIndexLevel = {
     songName: string,

@@ -103,7 +103,10 @@ game.initIndex().then(() => {
             if(active !== null) active.classList.remove("active");
             active = levelButton;
             levelButton.classList.add("active");
+
+            play.disabled = true;
             await game.loadIndexLevel(i)
+            play.disabled = false;
         });
         indexEl.appendChild(levelButton);
     });
