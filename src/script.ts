@@ -13,10 +13,12 @@ const win = {
     levelSelect: document.querySelector("#winLevelSelect") as HTMLDivElement,
     results: document.querySelector("#winResults") as HTMLDivElement,
     settings: document.querySelector("#winSettings") as HTMLDivElement,
+    howto: document.querySelector("#winHowto") as HTMLDivElement,
 };
 
 win.results.style.display = "none";
 win.settings.style.display = "none";
+win.howto.style.display = "none";
 
 const volume = document.querySelector("#volume") as HTMLInputElement;
 const updateVolume = () => {
@@ -82,6 +84,8 @@ document.querySelector("#closeResults")?.addEventListener("click", () => {
 });
 document.querySelector("#openSettings")?.addEventListener("click", () => win.settings.style.display = "unset");
 document.querySelector("#closeSettings")?.addEventListener("click", () => win.settings.style.display = "none");
+document.querySelector("#howto")?.addEventListener("click", () => win.howto.style.display = "unset");
+document.querySelector("#closeHowto")?.addEventListener("click", () => win.howto.style.display = "none");
 
 const indexEl = document.querySelector("#index") as HTMLDivElement;
 game.initIndex().then(() => {

@@ -35,6 +35,10 @@ canvas {
     overflow-y: scroll;
 }
 
+#winHowto {
+    overflow-y: scroll;
+}
+
 #file {
     color: white;
 }
@@ -130,4 +134,24 @@ button {
     width: 192px;
     margin-top: 8px;
     filter: drop-shadow(0 0 8px #0006);
+}
+
+#mobile {
+    display: none;
+    position: fixed;
+    top: 50vh;
+    left: 50vw;
+    transform: translate(-50%, -50%);
+    background: red;
+    color: white;
+    border: 2px solid white;
+    z-index: 9999;
+    padding: .5em;
+    font-size: x-large;
+}
+
+@media only screen and (max-width: 600px) {
+    #mobile {
+        display: block !important;
+    }
 }
