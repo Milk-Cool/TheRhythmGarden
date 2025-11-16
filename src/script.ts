@@ -118,3 +118,6 @@ game.initIndex().then(() => {
         indexEl.appendChild(levelButton);
     });
 });
+
+if(location.hostname === "itch.io" || location.hostname.endsWith(".itch.io") || location.hostname === "itch.zone" || location.hostname.endsWith(".itch.zone"))
+    (document.querySelector("#openEditor") as HTMLButtonElement).style.display = "none";
