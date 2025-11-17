@@ -13,5 +13,6 @@ export default defineConfig({
                 editor: resolve(import.meta.dirname, "editor.html")
             }
         }
-    }
+    },
+    base: "./"
 })

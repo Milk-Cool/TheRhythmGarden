@@ -82,14 +82,14 @@ export type Rank = "s" | "a" | "b" | "c" | "f";
 const flowerFrames = 4;
 const flowerFrameInterval = 50;
 const flowerColors: Record<string, string> = {
-    "red": "/flower/red%n.png",
-    "white": "/flower/white%n.png"
+    "red": "flower/red%n.png",
+    "white": "flower/white%n.png"
 };
 export type FlowerColor = keyof typeof flowerColors;
 
 const hitSounds = [
-    "/sounds/hihatpart.mp3",
-    "/sounds/hihatclosed.mp3"
+    "sounds/hihatpart.mp3",
+    "sounds/hihatclosed.mp3"
 ];
 
 type Hit = {
@@ -120,18 +120,18 @@ const SCORE_MULTIPLIERS: Record<Timing, number> = {
 };
 
 const RATINGS_IMAGES: Record<Timing, string> = {
-    "waow": "/ratings/waow.png",
-    "good": "/ratings/good.png",
-    "ok": "/ratings/ok.png",
-    "bad": "/ratings/bad.png"
+    "waow": "ratings/waow.png",
+    "good": "ratings/good.png",
+    "ok": "ratings/ok.png",
+    "bad": "ratings/bad.png"
 };
 
 const RANKS_IMAGES: Record<Rank, string> = {
-    "s": "/ranks/s.png",
-    "a": "/ranks/a.png",
-    "b": "/ranks/b.png",
-    "c": "/ranks/c.png",
-    "f": "/ranks/f.png"
+    "s": "ranks/s.png",
+    "a": "ranks/a.png",
+    "b": "ranks/b.png",
+    "c": "ranks/c.png",
+    "f": "ranks/f.png"
 };
 type RankWithImage = { rank: Rank, image: string };
 
