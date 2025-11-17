@@ -48,7 +48,9 @@ document.addEventListener("keydown", e => {
 });
 const play = document.querySelector("#play") as HTMLButtonElement;
 play.addEventListener("click", async () => {
-    game.vines?.toggleHitSounds((document.querySelector("#hitsounds") as HTMLInputElement).checked);
+    if(game.vines === null) return alert("Level not selected!");
+
+    game.vines.toggleHitSounds((document.querySelector("#hitsounds") as HTMLInputElement).checked);
 
     game.startLevel(() => {
         win.results.style.display = "unset";
