@@ -13,6 +13,11 @@ let meta = defaultMeta;
 let cur = 0;
 let playing = false;
 const getSnap = () => parseInt((document.querySelector("#snap") as HTMLInputElement).value);
+
+(document.querySelector("#snap") as HTMLInputElement).addEventListener("change", () => {
+  document.querySelector("#point-t")?.setAttribute("step", (1 / getSnap()).toString());
+});
+
 const getLayer = () => parseInt((document.querySelector("#layer") as HTMLInputElement).value);
 const setLayer = (layer: number) => (document.querySelector("#layer") as HTMLInputElement).value = layer.toString();
 
