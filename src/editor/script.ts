@@ -148,6 +148,16 @@ canvas.addEventListener("keydown", e => {
         selCamera = null;
         selPoint = null;
         updateSelection();
+    } else if(e.key === "Delete") {
+        if (selCamera !== null) {
+          cameraPoints.splice(selCamera, 1);
+          selCamera = null;
+          updateCameraSelection();
+        } else if (selPoint !== null) {
+          layers[getLayer()].splice(selPoint, 1);
+          selPoint = null;
+          updatePointSelection();
+        } else { return; }
     }
 });
 timeline.addEventListener("keydown", e => {
