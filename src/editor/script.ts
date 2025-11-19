@@ -13,6 +13,11 @@ let meta = defaultMeta;
 let cur = 0;
 let playing = false;
 const getSnap = () => parseInt((document.querySelector("#snap") as HTMLInputElement).value);
+
+(document.querySelector("#snap") as HTMLInputElement).addEventListener("change", () => {
+  document.querySelector("#point-t")?.setAttribute("step", (1 / getSnap()).toString());
+});
+
 const getLayer = () => parseInt((document.querySelector("#layer") as HTMLInputElement).value);
 const setLayer = (layer: number) => (document.querySelector("#layer") as HTMLInputElement).value = layer.toString();
 
@@ -148,6 +153,16 @@ canvas.addEventListener("keydown", e => {
         selCamera = null;
         selPoint = null;
         updateSelection();
+    } else if(e.key === "Delete") {
+        if (selCamera !== null) {
+          cameraPoints.splice(selCamera, 1);
+          selCamera = null;
+          updateCameraSelection();
+        } else if (selPoint !== null) {
+          layers[getLayer()].splice(selPoint, 1);
+          selPoint = null;
+          updatePointSelection();
+        } else { return; }
     }
 });
 timeline.addEventListener("keydown", e => {
@@ -561,7 +576,9 @@ const renderTimelineBPM = () => {
         el.style.left = `calc(var(--timeline-size) * ${point.b})`;
 
         el.addEventListener("click", () => {
-            const bpmStr = prompt("Enter BPM:", point.bpm.toString()) ?? "";
+            const bpmStr = prompt("Enter BPM:", point.bpm.toString());
+            if (bpmStr == null)
+                return;
             const bpm = parseFloat(bpmStr);
             if((Number.isNaN(bpm) || bpm <= 0) && bpmStr !== "")
                 return;
