@@ -561,7 +561,9 @@ const renderTimelineBPM = () => {
         el.style.left = `calc(var(--timeline-size) * ${point.b})`;
 
         el.addEventListener("click", () => {
-            const bpmStr = prompt("Enter BPM:", point.bpm.toString()) ?? "";
+            const bpmStr = prompt("Enter BPM:", point.bpm.toString());
+            if (bpmStr == null)
+                return;
             const bpm = parseFloat(bpmStr);
             if((Number.isNaN(bpm) || bpm <= 0) && bpmStr !== "")
                 return;
